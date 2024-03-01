@@ -12,4 +12,5 @@ class AppUser {
     required this.phone,
     required this.imageLink,
   });
+  
 }

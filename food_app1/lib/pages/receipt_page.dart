@@ -1,12 +1,23 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: use_build_context_synchronously, prefer_adjacent_string_concatenation, prefer_interpolation_to_compose_strings
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:food_app1/models/user_model.dart';
+import 'package:food_app1/pages/home_page.dart';
+
+// ... (existing imports)
 
 class ReceiptPage extends StatelessWidget {
   final String userId;
-  final String orderId;
+  final Future<String?> orderIdFuture;
+  final double totalAmount;
 
-  const ReceiptPage({Key? key, required this.userId, required this.orderId})
-      : super(key: key);
+  const ReceiptPage({
+    Key? key,
+    required this.userId,
+    required this.orderIdFuture,
+    required this.totalAmount,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,111 +25,182 @@ class ReceiptPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Receipt'),
       ),
-      body: FutureBuilder<DocumentSnapshot>(
-        future: FirebaseFirestore.instance
-            .collection('users')
-            .doc(userId)
-            .collection('order')
-            .doc(orderId)
-            .get(),
-        builder:
-            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+      body: FutureBuilder<String?>(
+        future: orderIdFuture,
+        builder: (context, orderIdSnapshot) {
+          if (orderIdSnapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
 
-          if (snapshot.hasError || !snapshot.hasData) {
-            print('Error fetching order details: ${snapshot.error}');
+          if (orderIdSnapshot.hasError || orderIdSnapshot.data == null) {
             return const Center(
               child: Text('Error fetching order details'),
             );
           }
 
-          Map<String, dynamic>? orderData =
-              snapshot.data!.data() as Map<String, dynamic>?;
+          String orderId = orderIdSnapshot.data!;
 
-          if (orderData == null) {
-            print('Order data is null');
-            return const Center(
-              child: Text('Error: Order data is null'),
-            );
-          }
+          return StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('users')
+                .doc(userId)
+                .collection('order')
+                .doc(orderId)
+                .collection('food')
+                .snapshots(),
+            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError) {
+                return const Center(
+                  child: Text('Error'),
+                );
+              }
 
-          print('Order Data: $orderData');
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
 
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Order Date: ${orderData['orderDate']}'),
-                const SizedBox(height: 16.0),
-                Text('Order ID: $orderId'),
-                const SizedBox(height: 16.0),
-                Text('Items:'),
-                Expanded(
-                  child: StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(userId)
-                        .collection('order')
-                        .doc(orderId)
-                        .collection('food')
-                        .snapshots(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
+              if (snapshot.data!.docs.isEmpty) {
+                return const Center(
+                  child: Text('No items in the cart'),
+                );
+              }
 
-                      if (snapshot.hasError) {
-                        print('Error fetching order items: ${snapshot.error}');
-                        return const Center(
-                          child: Text('Error fetching order items'),
-                        );
-                      }
+              return FutureBuilder<DocumentSnapshot>(
+                future: FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(userId)
+                    .collection('order')
+                    .doc(orderId)
+                    .get(),
+                builder: (context, orderInfoSnapshot) {
+                  if (orderInfoSnapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
 
-                      return ListView(
-                        children: snapshot.data!.docs.map(
-                          (DocumentSnapshot document) {
-                            Map<String, dynamic>? foodItem =
-                                document.data() as Map<String, dynamic>?;
+                  if (orderInfoSnapshot.hasError || !orderInfoSnapshot.hasData) {
+                    return const Center(
+                      child: Text('Error fetching order information'),
+                    );
+                  }
 
-                            if (foodItem == null) {
-                              print('Food item is null, skipping...');
-                              return const SizedBox.shrink(); // Skip null items
-                            }
+                  int tableNo = orderInfoSnapshot.data!['tableNo'] ?? 1; // Adjust the default value as needed
 
-                            return ListTile(
-                              title: Text('${foodItem['foodName']}'),
-                              subtitle: Text(
-                                'Quantity: ${foodItem['quantity']}   '
-                                'RM${(foodItem['quantity'] * double.parse(foodItem['price'].toString())).toStringAsFixed(2)}',
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Receipt Details',
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'User ID: $userId',
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Order ID: $orderId',
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Table No: $tableNo', // Display the tableNo
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'Items Purchased:',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: 200, // Adjust the height as needed
+                          child: ListView(
+                            children: snapshot.data!.docs.map(
+                              (DocumentSnapshot document) {
+                                Map<String, dynamic>? foodItem = document.data() as Map<String, dynamic>;
+
+                                return ListTile(
+                                  title: Text('${foodItem['foodName']}'),
+                                  subtitle: Text(
+                                    'Quantity: ${foodItem['quantity']}   '
+                                    'RM${(foodItem['quantity'] * double.parse(foodItem['price'].toString())).toStringAsFixed(2)}',
+                                  ),
+                                );
+                              },
+                            ).toList(),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Total Amount: RM${totalAmount.toStringAsFixed(2)}',
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 16),
+                        Container(
+                          padding: const EdgeInsets.all(16.0),
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Text(
+                            'Your order has been sent. Kindly pay ' +
+                                'RM${totalAmount.toStringAsFixed(2)} ' +
+                                'at the counter to proceed with your order.',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () async {
+                            String newOrderId = await _createNewOrder(userId);
+
+                            // Create a temporary AppUser instance with only userId
+                            AppUser temporaryUser = AppUser(uid: userId, email: "", name: "", phone: 0, imageLink: "");
+
+                            // Navigate to the HomePage with the temporary AppUser instance
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HomePage(
+                                  user: temporaryUser,
+                                ),
                               ),
                             );
                           },
-                        ).toList(),
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(height: 16.0),
-                Text(
-                  'Total Amount: RM${orderData['totalAmount'].toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
+                          child: const Text('Make New Order'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
           );
         },
       ),
     );
+  }
+
+  Future<String> _createNewOrder(String userId) async {
+    // Create a new order document under the 'order' collection
+    DocumentReference newOrderRef =
+        await FirebaseFirestore.instance.collection('users').doc(userId).collection('order').add({
+      'orderDate': DateTime.now(),
+    });
+
+    // Return the ID of the newly created order
+    return newOrderRef.id;
   }
 }

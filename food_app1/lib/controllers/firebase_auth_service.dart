@@ -138,11 +138,11 @@ class FirebaseAuthService {
 
       return foodDocs.docs.map((foodDoc) {
         return Food(
-          foodid: foodDoc.data()?['foodid'] ?? "",
-          name: foodDoc.data()?['name'] ?? "",
-          description: foodDoc.data()?['description'] ?? "",
-          price: foodDoc.data()?['price'] ?? 0.0,
-          imagePath: foodDoc.data()?['imagePath'] ?? "",
+          foodid: foodDoc.data()['foodid'] ?? "",
+          name: foodDoc.data()['name'] ?? "",
+          description: foodDoc.data()['description'] ?? "",
+          price: foodDoc.data()['price'] ?? 0.0,
+          imagePath: foodDoc.data()['imagePath'] ?? "",
         );
       }).toList();
     } catch (e) {

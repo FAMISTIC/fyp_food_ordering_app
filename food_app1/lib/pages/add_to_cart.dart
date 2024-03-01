@@ -1,22 +1,30 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, must_be_immutable
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:food_app1/pages/receipt_page.dart';
 
-class CartPage extends StatelessWidget {
+class CartPage extends StatefulWidget {
   final String userId;
 
-  const CartPage({Key? key, required this.userId}) : super(key: key);
+  CartPage({Key? key, required this.userId}) : super(key: key);
 
   @override
-  Widget build(BuildContext context)  {
+  _CartPageState createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
+  double totalAmount = 0;
+  int selectedTableNo = 1;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cart'),
       ),
       body: FutureBuilder<String?>(
-        future: _getUserOrderId(userId),
+        future: _getUserOrderId(widget.userId),
         builder: (BuildContext context, AsyncSnapshot<String?> orderIdSnapshot) {
           if (orderIdSnapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -35,13 +43,12 @@ class CartPage extends StatelessWidget {
           return StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('users')
-                .doc(userId)
+                .doc(widget.userId)
                 .collection('order')
                 .doc(orderId)
                 .collection('food')
                 .snapshots(),
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) {
                 return const Center(
                   child: Text('Error'),
@@ -60,7 +67,7 @@ class CartPage extends StatelessWidget {
                 );
               }
 
-              double totalAmount = 0;
+              totalAmount = 0;
 
               return Column(
                 children: [
@@ -68,8 +75,7 @@ class CartPage extends StatelessWidget {
                     child: ListView(
                       children: snapshot.data!.docs.map(
                         (DocumentSnapshot document) {
-                          Map<String, dynamic>? foodItem =
-                              document.data() as Map<String, dynamic> ;
+                          Map<String, dynamic>? foodItem = document.data() as Map<String, dynamic>;
 
                           totalAmount += foodItem['quantity'] *
                               double.parse(foodItem['price'].toString());
@@ -96,7 +102,6 @@ class CartPage extends StatelessWidget {
                                       _updateQuantity(
                                           orderId, document.id, foodItem['quantity'] - 1);
                                     } else {
-                                      // Implement logic to remove the item from the cart
                                       _removeItem(orderId, document.id);
                                     }
                                   },
@@ -104,7 +109,6 @@ class CartPage extends StatelessWidget {
                                 ),
                                 IconButton(
                                   onPressed: () {
-                                    // Implement logic to remove the item from the cart
                                     _removeItem(orderId, document.id);
                                   },
                                   icon: const Icon(Icons.delete),
@@ -114,6 +118,26 @@ class CartPage extends StatelessWidget {
                           );
                         },
                       ).toList(),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: DropdownButton<int>(
+                      value: selectedTableNo,
+                      items: List.generate(10, (index) {
+                        return DropdownMenuItem<int>(
+                          value: index + 1,
+                          child: Text('Table ${index + 1}'),
+                        );
+                      }),
+                      onChanged: (int? value) {
+                        if (value != null) {
+                          setState(() {
+                            selectedTableNo = value;
+                          });
+                        }
+                      },
+                      hint: const Text('Select Table'),
                     ),
                   ),
                   Padding(
@@ -137,23 +161,26 @@ class CartPage extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: ElevatedButton(
             onPressed: () async {
+              String orderId = await _getUserOrderId(widget.userId) ?? '';
+
               await FirebaseFirestore.instance
                   .collection('users')
-                  .doc(userId)
+                  .doc(widget.userId)
                   .collection('order')
-                  .doc(await _getUserOrderId(userId))
+                  .doc(orderId)
                   .update({
                 'checkOutDate': DateTime.now(),
+                'totalAmount': totalAmount,
+                'tableNo': selectedTableNo,
               });
 
-              // Implement any additional logic for the checkout process here
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ReceiptPage(userId: userId, orderId:  _getUserOrderId(userId).toString()),
+                  builder: (context) => ReceiptPage(userId: widget.userId, orderIdFuture: _getUserOrderId(widget.userId), totalAmount: totalAmount),
                 ),
               );
-              // Show a success message or navigate to a confirmation page
+
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Checkout successful'),
@@ -191,7 +218,7 @@ class CartPage extends StatelessWidget {
   void _updateQuantity(String orderId, String foodId, int newQuantity) {
     FirebaseFirestore.instance
         .collection('users')
-        .doc(userId)
+        .doc(widget.userId)
         .collection('order')
         .doc(orderId)
         .collection('food')
@@ -202,7 +229,7 @@ class CartPage extends StatelessWidget {
   void _removeItem(String orderId, String foodId) {
     FirebaseFirestore.instance
         .collection('users')
-        .doc(userId)
+        .doc(widget.userId)
         .collection('order')
         .doc(orderId)
         .collection('food')

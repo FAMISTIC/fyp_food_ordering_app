@@ -11,7 +11,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 class NavDrawer extends StatefulWidget {
   final AppUser user;
 
-  NavDrawer({super.key, required this.user});
+  const NavDrawer({super.key, required this.user});
 
   @override
   _NavDrawerState createState() => _NavDrawerState();
@@ -37,9 +37,9 @@ class _NavDrawerState extends State<NavDrawer>{
           const SizedBox(height: 20),
           CircleAvatar(
             radius: 64,
-            backgroundImage: NetworkImage('${_updatedUser.imageLink}'),),
+            backgroundImage: NetworkImage(_updatedUser.imageLink),),
             const SizedBox(height: 20),
-          Text('${_updatedUser.name}'),
+          Text(_updatedUser.name),
           const SizedBox(height: 20),
           ListTile(
             leading: const Icon(Icons.settings),
