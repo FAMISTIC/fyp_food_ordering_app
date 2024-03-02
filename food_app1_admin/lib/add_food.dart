@@ -15,11 +15,15 @@ class _AddFoodState extends State<AddFood> {
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController priceController = TextEditingController();
+  TextEditingController imagePathController = TextEditingController(); // New controller for image path
+  TextEditingController typeController = TextEditingController(); 
 
   _clearText() {
     nameController.clear();
     descriptionController.clear();
     priceController.clear();
+    typeController.clear();
+    imagePathController.clear(); // Clear image path controller
   }
 
   Future<void> addFoodDetails(Food food) async {
@@ -30,7 +34,8 @@ class _AddFoodState extends State<AddFood> {
         'name': food.name,
         'description': food.description,
         'price': food.price,
-        'imagePath' : food.imagePath,
+        'imagePath': food.imagePath, // Save image path to Firestore
+        'type' : food.type,
       });
     } catch (e) {
       print("Failed to add food details: $e");
@@ -42,9 +47,16 @@ class _AddFoodState extends State<AddFood> {
     String description = descriptionController.text;
     double price = double.tryParse(priceController.text) ?? 0.0;
     String foodid = "some_generated_id";
-    String imagePath = "";
+    String imagePath = imagePathController.text; // Get image path from the controller
+    String type = typeController.text;
 
-    return Food( foodid: foodid,name: name, description:description, price:price, imagePath: imagePath);
+    return Food(
+        foodid: foodid,
+        name: name,
+        description: description,
+        price: price,
+        imagePath: imagePath,
+        type: type);
   }
 
   @override
@@ -52,6 +64,7 @@ class _AddFoodState extends State<AddFood> {
     nameController.dispose();
     priceController.dispose();
     descriptionController.dispose();
+    imagePathController.dispose(); // Dispose image path controller
     super.dispose();
   }
 
@@ -76,6 +89,10 @@ class _AddFoodState extends State<AddFood> {
             CustomTextEditField(
               controller: priceController,
               labettxt: 'Price',
+            ),
+            CustomTextEditField(
+              controller: typeController,
+              labettxt: 'Type', // New field for image path
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

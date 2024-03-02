@@ -38,6 +38,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
   }
 
   String searchQuery = '';
+   String _selectedFoodType = '';
 
   void search() {
     String query = _searchController.text.toLowerCase();
@@ -73,10 +74,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
             firebaseData.add(foodData);
           });
       
-          final List filteredData = firebaseData
+           final List filteredData = firebaseData
               .where((item) =>
-                  item['name'].toLowerCase().contains(searchQuery) ||
-                  item['price'].toString().contains(searchQuery))
+                  (item['name'].toLowerCase().contains(searchQuery) ||
+                      item['price'].toString().contains(searchQuery)) &&
+                  (_selectedFoodType.isEmpty || item['type'] == _selectedFoodType))
               .toList();
       
           return WillPopScope(
@@ -104,219 +106,207 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
                   false;
             },
             child: Scaffold(
-              appBar: AppBar(
-                title: const Text('Home Page'),
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CartPage(userId: _updatedUser.uid),
+          appBar: AppBar(
+            title: const Text('Home Page'),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CartPage(userId: _updatedUser.uid),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.fastfood),
+              ),
+            ],
+          ),
+          drawer: NavDrawer(user: _updatedUser),
+          body: Column(
+            children: [
+              SizedBox(
+                height: 50,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(2),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _selectedFoodType = ''; // Show all foods
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.green,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
                         ),
-                      );
-                    },
-                    icon: const Icon(Icons.fastfood),
-                  ),
-                ],
-              ),
-              drawer: NavDrawer(user: _updatedUser),
-              body: 
-                Column(
-  children: [
-    SizedBox(
-  height: 50,
-  child: ListView(
-    scrollDirection: Axis.horizontal,
-    children: <Widget>[
-      Padding(
-        padding: const EdgeInsets.all(2), // Adjust the spacing as needed
-        child: ElevatedButton(
-          onPressed: () {
-            // Handle button tap for Item 1
-          },
-          style: ElevatedButton.styleFrom(
-            primary: Colors.green,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-          ),
-          child: const Center(
-            child: Text(
-              'Roti',
-              style: TextStyle(fontSize: 18, color: Colors.white),
-            ),
-          ),
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.all(2),// Adjust the spacing as needed
-        child: ElevatedButton(
-          onPressed: () {
-            // Handle button tap for Item 2
-          },
-          style: ElevatedButton.styleFrom(
-            primary: Colors.green,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-          ),
-          child: const Center(
-            child: Text(
-              'Nasi',
-              style: TextStyle(fontSize: 18, color: Colors.white),
-            ),
-            
-          ),
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.all(2), // Adjust the spacing as needed
-        child: ElevatedButton(
-          onPressed: () {
-            // Handle button tap for Item 3
-          },
-          style: ElevatedButton.styleFrom(
-            primary: Colors.green,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-          ),
-          child: const Center(
-            child: Text(
-              'Minum',
-              style: TextStyle(fontSize: 18, color: Colors.white),
-            ),
-          ),
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.all(2),
-        child: ElevatedButton(
-          onPressed: () {
-            // Handle button tap for Item 4
-          },
-          style: ElevatedButton.styleFrom(
-            primary: Colors.green,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-          ),
-          child: const Center(
-            child: Text(
-              'Lauk',
-              style: TextStyle(fontSize: 18, color: Colors.white),
-            ),
-          ),
-        ),
-      ),
-    ],
-  ),
-),
-
-    Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 10),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25.0),
-          child: TextField(
-            controller: _searchController,
-            onSubmitted: (value) => search(),
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderSide: const BorderSide(color: Colors.white),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Colors.white),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Colors.white),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              hintText: "Search here..",
-              prefixIcon: const Icon(
-                Icons.search,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
-        for (var i = 0; i < filteredData.length; i++) ...[
-          GestureDetector(
-            onTap: () {
-              _AddToCart(filteredData[i], _updatedUser.uid);
-            },
-            child: Container(
-              width: 400,
-              margin: const EdgeInsets.all(10),
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 21, 180, 26),
-                borderRadius: BorderRadius.circular(12.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.5),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  SizedBox(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.network(
-                        filteredData[i]['imagePath'],
-                        height: 100,
-                        width: 200,
-                        fit: BoxFit.cover,
+                        child: const Center(
+                          child: Text(
+                            'All',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            filteredData[i]['name'],
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Color.fromARGB(255, 255, 255, 255),
-                              fontWeight: FontWeight.bold,
-                            ),
+                    Padding(
+                      padding: const EdgeInsets.all(2),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _selectedFoodType = 'roti'; // Filter by 'Roti'
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.green,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'RM ${filteredData[i]['price'].toString()}',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Color.fromARGB(255, 255, 255, 255),
-                            ),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'Roti',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
                           ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.all(2),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _selectedFoodType = 'nasi'; // Filter by 'Roti'
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.green,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'Nasi',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Add more buttons for other food types
+                  ],
+                ),
               ),
-            ),
-          )
-        ],
-      ],
-    ),
-  ],
-),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: TextField(
+                          controller: _searchController,
+                          onSubmitted: (value) => search(),
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.white),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            hintText: "Search here..",
+                            prefixIcon: const Icon(
+                              Icons.search,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      for (var i = 0; i < filteredData.length; i++) ...[
+                        GestureDetector(
+                          onTap: () {
+                            _AddToCart(filteredData[i], _updatedUser.uid);
+                          },
+                          child: Container(
+                            width: 400,
+                            margin: const EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 21, 180, 26),
+                              borderRadius: BorderRadius.circular(12.0),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: Image.network(
+                                      filteredData[i]['imagePath'],
+                                      height: 100,
+                                      width: 200,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          filteredData[i]['name'],
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Color.fromARGB(255, 255, 255, 255),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'RM ${filteredData[i]['price'].toString()}',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Color.fromARGB(255, 255, 255, 255),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
 
-            ),
           );
         },
       ),

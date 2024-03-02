@@ -191,16 +191,16 @@ class _FoodPageState extends State<FoodPage> {
                             TableRow(
                               children: [
                                 TableCell(
-                                  child: Expanded(
-                                    child: SizedBox(
-                                      child: Center(
-                                        child: Image.network(
-                                          filteredData[i]['imagePath'],
-                                          height:50,
-                                          width: 100,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
+                                  child: SizedBox(
+                                    child: Center(
+                                      child: filteredData[i]['imagePath'] != null && filteredData[i]['imagePath'].isNotEmpty
+                                          ? Image.network(
+                                              filteredData[i]['imagePath'],
+                                              height: 50,
+                                              width: 100,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : const Text('No Image'),  // Display some placeholder text or widget when imagePath is empty
                                     ),
                                   ),
                                 ),

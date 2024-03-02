@@ -42,9 +42,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final Future<FirebaseApp> _initailization = Firebase.initializeApp();
+    final Future<FirebaseApp> initailization = Firebase.initializeApp();
     return FutureBuilder(
-        future: _initailization,
+        future: initailization,
         builder: (context, snapshot) {
           //Something from Firebase
           if (snapshot.hasError) {
