@@ -1,5 +1,6 @@
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app1_admin/login.dart';
 
@@ -33,11 +34,34 @@ Future<void> main() async {
         // 4. App Attest provider with fallback to Device Check provider (App Attest provider is only available on iOS 14.0+, macOS 14.0+)
     appleProvider: AppleProvider.appAttest,
   );
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  
+  MyApp({Key? key}) : super(key: key){
+    _configureFirebase();
+  }
+  
+  void _configureFirebase() {
+    _firebaseMessaging.getToken().then((String? token) {
+      print('FCM Token: $token');
+      // You can save the token or send it to your server for later use.
+    });
+
+    // Handle incoming messages when the app is in the foreground
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Received message: ${message.notification?.title}');
+      // Handle the message here
+    });
+
+    // Handle when the app is in the background and opened by tapping the notification
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('Opened app from background message: ${message.notification?.title}');
+      // Handle the message here
+    });
+  }
 
   // This widget is the root of your application.
   @override

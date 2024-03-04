@@ -46,8 +46,9 @@ dependencies:
   email_validator: ^2.1.17
   google_fonts: ^6.1.0
   provider: ^6.1.1
-  pdf: ^3.10.8
-
+  flutter_native_splash: ^1.2.0
+  firebase_messaging: ^14.7.17
+  firebase_analytics: ^10.5.2
 
 dev_dependencies:
   flutter_test:

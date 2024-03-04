@@ -1,8 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:food_app1_admin/notification_services.dart';
 
-class OrderPage extends StatelessWidget {
+class OrderPage extends StatefulWidget {
   const OrderPage({Key? key}) : super(key: key);
+
+  @override
+  State<OrderPage> createState() => _OrderPageState();
+}
+
+class _OrderPageState extends State<OrderPage> {
+
+  NotificationServices notificationServices = NotificationServices();
+
+  @override
+ void initState(){
+  super.initState();
+  notificationServices.requestNotificationPermission();
+ }
 
   @override
   Widget build(BuildContext context) {
