@@ -378,17 +378,29 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
   }
-  Future<void> _showFavoriteFood(String userId) async {
-  QuerySnapshot favoritesSnapshot = await FirebaseFirestore.instance
+Future<void> _showFavoriteFood(String userId) async {
+  CollectionReference favoritesCollection = FirebaseFirestore.instance
       .collection('users')
       .doc(userId)
-      .collection('favorites')
+      .collection('favorites');
+
+  QuerySnapshot favoritesSnapshot = await favoritesCollection.get();
+
+  List<String> favoriteFoodNames = [];
+  favoritesSnapshot.docs.forEach((doc) {
+    favoriteFoodNames.add(doc['foodName']);
+  });
+
+  // Query the 'foods' collection for favorited foods
+  QuerySnapshot foodsSnapshot = await FirebaseFirestore.instance
+      .collection('foods')
+      .where('name', whereIn: favoriteFoodNames)
       .get();
 
-  List<String> favoriteFoods = [];
-
-  favoritesSnapshot.docs.forEach((doc) {
-    favoriteFoods.add(doc['foodName']);
+  List<Map<String, dynamic>> favoriteFoods = [];
+  foodsSnapshot.docs.forEach((foodDoc) {
+    Map<String, dynamic> foodData = foodDoc.data() as Map<String, dynamic>;
+    favoriteFoods.add(foodData);
   });
 
   showDialog(
@@ -397,7 +409,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       return AlertDialog(
         title: const Text('Favorite Foods'),
         content: Column(
-          children: favoriteFoods.map((food) => Text(food)).toList(),
+          children: favoriteFoods.map((food) {
+            return ListTile(
+              title: Text(food['name']),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Price: ${food['price']}'),
+                  Image.network(food['imagePath']),
+                ],
+              ),
+            );
+          }).toList(),
         ),
         actions: [
           ElevatedButton(
@@ -411,8 +434,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     },
   );
 }
-
-
   // Add this function inside your _HomePageState class
   Future<String> _getUserOrderId(String userId) async {
     var orderSnapshot = await FirebaseFirestore.instance
