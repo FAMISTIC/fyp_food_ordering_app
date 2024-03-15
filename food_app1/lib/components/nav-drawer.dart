@@ -8,6 +8,7 @@ import 'package:food_app1/pages/home_page.dart';
 import 'package:food_app1/pages/login_page.dart';
 import 'package:food_app1/models/user_model.dart';
 import 'package:food_app1/pages/settings_page.dart';
+import 'package:food_app1/pages/table_reservation_page.dart';
 import 'package:food_app1/pages/user_profile_page.dart';
 import 'package:food_app1/pages/history_page.dart'; // Import the new HistoryPage
 import 'package:google_sign_in/google_sign_in.dart';
@@ -102,10 +103,19 @@ class _NavDrawerState extends State<NavDrawer> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.table_restaurant),
-            title: const Text('Table Reservation'),
-            onTap: () => {Navigator.of(context).pop()},
-          ),
+          leading: const Icon(Icons.table_restaurant),
+          title: const Text('Table Reservation'),
+          onTap: () {
+            Navigator.of(context).pop(); // Close the drawer
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TableReservationPage(user: _updatedUser), // Navigate to TableReservationPage
+              ),
+            );
+          },
+        ),
+
           ListTile(
             leading: const Icon(Icons.exit_to_app),
             title: const Text('Logout'),

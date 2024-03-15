@@ -403,27 +403,37 @@ Future<void> _showFavoriteFood(String userId) async {
     favoriteFoods.add(foodData);
   });
 
+  // Show dialog for favorite foods
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
         title: const Text('Favorite Foods'),
-        content: Column(
-          children: favoriteFoods.map((food) {
-            return ListTile(
-              title: Text(food['name']),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Price: ${food['price']}'),
-                  Image.network(food['imagePath']),
-                ],
-              ),
-            );
-          }).toList(),
+        content: Container(
+          width: double.maxFinite,
+          child: ListView.builder(
+            itemCount: favoriteFoods.length,
+            itemBuilder: (BuildContext context, int index) {
+              return ListTile(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(favoriteFoods[index]['name']),
+                    IconButton(
+                      onPressed: () {
+                        _AddToCart(favoriteFoods[index], userId);
+                      },
+                      icon: Icon(Icons.add_shopping_cart),
+                    ),
+                  ],
+                ),
+                // Add other details or customize ListTile as needed
+              );
+            },
+          ),
         ),
         actions: [
-          ElevatedButton(
+          TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -434,6 +444,9 @@ Future<void> _showFavoriteFood(String userId) async {
     },
   );
 }
+
+
+
   // Add this function inside your _HomePageState class
   Future<String> _getUserOrderId(String userId) async {
     var orderSnapshot = await FirebaseFirestore.instance
