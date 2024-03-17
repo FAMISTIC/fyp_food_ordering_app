@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AboutDjuPage extends StatelessWidget {
+  const AboutDjuPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

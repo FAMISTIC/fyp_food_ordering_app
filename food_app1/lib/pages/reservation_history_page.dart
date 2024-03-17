@@ -1,7 +1,10 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:food_app1/models/user_model.dart';
 import 'package:food_app1/controllers/firebase_auth_service.dart';
+import 'package:intl/intl.dart';
 
 class ReservationHistoryPage extends StatefulWidget {
   final AppUser user;
@@ -14,6 +17,9 @@ class ReservationHistoryPage extends StatefulWidget {
 
 class _ReservationHistoryPageState extends State<ReservationHistoryPage> {
   late AppUser _updatedUser;
+
+  final DateFormat dateFormatter = DateFormat('MMM dd, yyyy');
+  final DateFormat timeFormatter = DateFormat('hh:mm a');
 
   @override
   void initState() {
@@ -53,16 +59,23 @@ class _ReservationHistoryPageState extends State<ReservationHistoryPage> {
               child: Text('No reservations found'),
             );
           }
-          return ListView(
-            children: reservationDocuments.map((DocumentSnapshot document) {
-              final data = document.data() as Map<String, dynamic>;
-              return ListTile(
-                title: Text('Date: ${data['Date']}'),
-                subtitle: Text('Time: ${data['Time']}'),
-                trailing: Text('Status: ${data['status']}'),
-              );
-            }).toList(),
-          );
+            return ListView(
+              children: reservationDocuments.map((DocumentSnapshot document) {
+                final data = document.data() as Map<String, dynamic>;
+                final DateTime date = data['Date'].toDate();
+                final String formattedDate = dateFormatter.format(date);
+                final String formattedTime = timeFormatter.format(date);
+                return Card(
+                  margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  child: ListTile(
+                    title: Text('Date: $formattedDate'),
+                    subtitle: Text('Time: $formattedTime'),
+                    trailing: Text('Status: ${data['status']}'),
+                  ),
+                );
+              }).toList(),
+            );
+
         },
       ),
     );

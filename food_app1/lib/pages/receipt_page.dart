@@ -179,7 +179,7 @@ class ReceiptPage extends StatelessWidget {
                               ),
                             );
                           },
-                          child: const Text('Make New Order'),
+                          child: const Text('Confirm Order'),
                         ),
                       ],
                     ),

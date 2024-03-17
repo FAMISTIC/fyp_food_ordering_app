@@ -448,26 +448,25 @@ Future<void> _showFavoriteFood(String userId) async {
 
 
   // Add this function inside your _HomePageState class
-  Future<String> _getUserOrderId(String userId) async {
-    var orderSnapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .collection('order')
-        .limit(1)
-        .get();
+Future<String> _getUserOrderId(String userId) async {
+  // Check if there is an existing order for the user
+  var orderSnapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(userId)
+      .collection('order')
+      .limit(1)
+      .get();
 
-    if (orderSnapshot.docs.isNotEmpty) {
-      return orderSnapshot.docs.first.id;
-    } else {
-      var newOrder = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .collection('order')
-          .add({'orderDate': DateTime.now()});
-
-      return newOrder.id;
-    }
+  // If an order already exists, return its ID
+  if (orderSnapshot.docs.isNotEmpty) {
+    return orderSnapshot.docs.first.id;
+  } else {
+    // If no order exists, return null to indicate that an order ID should be generated later
+    return '';
   }
+}
+
+
 
   Future<void> _fetchUserDetails() async {
     AppUser? userDetails =
@@ -580,12 +579,17 @@ Future<void> _showFavoriteFood(String userId) async {
                         'orderDate': DateTime.now(),
                       };
 
-                      await FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(userId)
-                          .collection('order')
-                          .doc(orderId)
-                          .set(orderData);
+                       if (orderId.isEmpty) {
+                          orderId = DateTime.now().millisecondsSinceEpoch.toString();
+
+                          // Create a new order document for the user
+                          await FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(userId)
+                              .collection('order')
+                              .doc(orderId)
+                              .set({'orderDate': DateTime.now()});
+                        }
 
                       String foodId =
                           DateTime.now().millisecondsSinceEpoch.toString();
