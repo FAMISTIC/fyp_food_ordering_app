@@ -27,7 +27,7 @@ class _ResetPasswordState extends State<ResetPassword> {
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
       ),
-      body: Container(
+      body: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: SingleChildScrollView(

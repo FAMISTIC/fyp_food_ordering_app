@@ -59,6 +59,14 @@ class _HistoryPageState extends State<HistoryPage> {
             itemBuilder: (context, index) {
               Map<String, dynamic> orderData = orders[index].data() as Map<String, dynamic>;
               String orderId = orders[index].id;
+              
+              // Check if checkout date, table no, and total amount are all null
+              if (orderData['checkOutDate'] == null &&
+                  orderData['tableNo'] == null &&
+                  orderData['totalAmount'] == null) {
+                // Hide the order if all details are null
+                return const SizedBox.shrink();
+              }
 
               return Card(
                 margin: const EdgeInsets.all(8.0),
@@ -67,10 +75,12 @@ class _HistoryPageState extends State<HistoryPage> {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Order Date: ${_formatDate(orderData['orderDate'])}'),
-                      Text('Check-Out Date: ${_formatDate(orderData['checkOutDate'])}'),
-                      Text('Table No: ${orderData['tableNo']}'),
-                      Text('Total Amount: RM ${orderData['totalAmount']}'),
+                      if (orderData['checkOutDate'] != null)
+                        Text('Check-Out Date: ${_formatDate(orderData['checkOutDate'])}'),
+                      if (orderData['tableNo'] != null)
+                        Text('Table No: ${orderData['tableNo']}'),
+                      if (orderData['totalAmount'] != null)
+                        Text('Total Amount: RM ${orderData['totalAmount']}'),
                     ],
                   ),
                 ),
