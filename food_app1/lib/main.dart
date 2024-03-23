@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -9,6 +10,16 @@ void main() async {
   await Firebase.initializeApp(
     name: 'foodapp1-9dc11',
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+  AwesomeNotifications().initialize(
+    null,
+    [
+      NotificationChannel(
+        channelKey: 'basic_channel', 
+        channelName: 'Basic notification', 
+        channelDescription: 'Notification channel for basic tests'),
+    ],
+    debug: true,
   );
 
   runApp(const MyApp());

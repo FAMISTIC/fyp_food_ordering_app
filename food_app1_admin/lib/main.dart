@@ -37,29 +37,28 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+
+  MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  
-  MyApp({Key? key}) : super(key: key){
-    _configureFirebase();
-  }
-  
-  void _configureFirebase() {
-    _firebaseMessaging.getToken().then((String? token) {
-      print('FCM Token: $token');
-      // You can save the token or send it to your server for later use.
+
+   @override
+  void initState() {
+    super.initState();
+    _firebaseMessaging.requestPermission();
+    _firebaseMessaging.getToken().then((token) {
+      print("FCM Token: $token");
     });
 
-    // Handle incoming messages when the app is in the foreground
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Received message: ${message.notification?.title}');
-      // Handle the message here
-    });
-
-    // Handle when the app is in the background and opened by tapping the notification
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('Opened app from background message: ${message.notification?.title}');
-      // Handle the message here
+      print("Received message: ${message.notification?.title}");
+      print("Received message: ${message.notification?.body}");
     });
   }
 
@@ -92,3 +91,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
+ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+       print("Handling a background message");
+ } 
