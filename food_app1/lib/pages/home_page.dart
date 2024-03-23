@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => CartPage(userId: _updatedUser.uid),
+                          builder: (context) => CartPage(userId: _updatedUser.uid, newOrderId: '',),
                         ),
                       );
                     },
@@ -454,6 +454,7 @@ Future<String> _getUserOrderId(String userId) async {
       .collection('users')
       .doc(userId)
       .collection('order')
+      .orderBy('orderDate', descending: true) // Order by orderDate descending
       .limit(1)
       .get();
 
@@ -575,9 +576,9 @@ Future<String> _getUserOrderId(String userId) async {
                         });
                       }
 
-                      Map<String, dynamic> orderData = {
+                  /*    Map<String, dynamic> orderData = {
                         'orderDate': DateTime.now(),
-                      };
+                      };*/
 
                        if (orderId.isEmpty) {
                           orderId = DateTime.now().millisecondsSinceEpoch.toString();

@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, must_be_immutable
+// ignore_for_file: use_build_context_synchronously, must_be_immutable, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,8 +6,9 @@ import 'package:food_app1/pages/receipt_page.dart';
 
 class CartPage extends StatefulWidget {
   final String userId;
+  final String newOrderId;
 
-  CartPage({Key? key, required this.userId}) : super(key: key);
+  const CartPage({Key? key, required this.userId,required this.newOrderId}) : super(key: key);
 
   @override
   _CartPageState createState() => _CartPageState();
@@ -174,10 +175,13 @@ class _CartPageState extends State<CartPage> {
                 'tableNo': selectedTableNo,
               });
 
+              // Get the new order ID after updating
+              String newOrderId = await _getUserOrderId(widget.userId) ?? '';
+
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ReceiptPage(userId: widget.userId, orderIdFuture: _getUserOrderId(widget.userId), totalAmount: totalAmount),
+                  builder: (context) => ReceiptPage(userId: widget.userId, orderIdFuture: Future.value(newOrderId), totalAmount: totalAmount),
                 ),
               );
 
@@ -189,31 +193,37 @@ class _CartPageState extends State<CartPage> {
             },
             child: const Text('Checkout'),
           ),
+
         ),
       ),
     );
   }
 
-  Future<String?> _getUserOrderId(String userId) async {
-    var orderSnapshot = await FirebaseFirestore.instance
+Future<String?> _getUserOrderId(String userId) async {
+  var orderSnapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(userId)
+      .collection('order')
+      .orderBy('orderDate', descending: true) // Order by orderDate descending
+      .limit(1)
+      .get();
+
+  if (orderSnapshot.docs.isNotEmpty) {
+    return orderSnapshot.docs.first.id;
+  } else {
+    var newOrderRef = await FirebaseFirestore.instance
         .collection('users')
         .doc(userId)
         .collection('order')
-        .limit(1)
-        .get();
+        .add({'orderDate': DateTime.now()});
 
-    if (orderSnapshot.docs.isNotEmpty) {
-      return orderSnapshot.docs.first.id;
-    } else {
-      var newOrder = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .collection('order')
-          .add({'orderDate': DateTime.now()});
-
-      return newOrder.id;
-    }
+    // Wait for the new order to be created and return its ID
+    return newOrderRef.id;
   }
+}
+
+
+
 
   void _updateQuantity(String orderId, String foodId, int newQuantity) {
     FirebaseFirestore.instance

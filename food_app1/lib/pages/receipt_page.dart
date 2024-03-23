@@ -235,7 +235,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => HomePage(
-                                  user: temporaryUser,
+                                  user: temporaryUser
                                 ),
                               ),
                             );
