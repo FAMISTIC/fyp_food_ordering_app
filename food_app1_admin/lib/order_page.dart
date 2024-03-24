@@ -74,14 +74,14 @@ class OrderList extends StatelessWidget {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      for (var order in userOrders)
-                        Text(' - Order Date  : ${_formatDate(order['checkOutDate'])}'),
+                     // for (var order in userOrders)
+                     //   Text(' - Order Date  : ${_formatDate(order['checkOutDate'])}'),
                       for (var order in userOrders)
                         Text(' - Order Date  : ${_formatDate(order['orderDate'])}'),
-                      for (var order in userOrders)
-                        Text(' - Table No    : ${order['tableNo']}'),
-                      for (var order in userOrders)
-                        Text(' - Total Amount: ${order['totalAmount']}'),
+                     // for (var order in userOrders)
+                     //   Text(' - Table No    : ${order['tableNo']}'),
+                     // for (var order in userOrders)
+                     //   Text(' - Total Amount: ${order['totalAmount']}'),
                     ],
                   ),
                 );
@@ -94,9 +94,12 @@ class OrderList extends StatelessWidget {
   }
 }
 
-String _formatDate(Timestamp date) {
-  // Assuming 'orderDate' is a Timestamp type
+String _formatDate(Timestamp? date) {
+  if (date == null) {
+    return 'Unknown'; // Or any default value you prefer
+  }
   DateTime dateTime = date.toDate();
   String formattedDate = "${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute}";
   return formattedDate;
 }
+

@@ -17,6 +17,7 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   double totalAmount = 0;
   int selectedTableNo = 1;
+  TextEditingController _noteController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -123,6 +124,16 @@ class _CartPageState extends State<CartPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      controller: _noteController,
+                      decoration: const InputDecoration(
+                        labelText: 'Note',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: DropdownButton<int>(
                       value: selectedTableNo,
                       items: List.generate(10, (index) {
@@ -170,9 +181,11 @@ class _CartPageState extends State<CartPage> {
                   .collection('order')
                   .doc(orderId)
                   .update({
+                'orderDate': DateTime.now(),
                 'checkOutDate': DateTime.now(),
                 'totalAmount': totalAmount,
                 'tableNo': selectedTableNo,
+                'note': _noteController.text,
               });
 
               // Get the new order ID after updating

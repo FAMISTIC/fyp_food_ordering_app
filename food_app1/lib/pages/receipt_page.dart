@@ -150,6 +150,8 @@ class _ReceiptPageState extends State<ReceiptPage> {
 
                   int tableNo = orderInfoSnapshot.data!['tableNo'] ?? 1; // Adjust the default value as needed
 
+                  String note = orderInfoSnapshot.data!['note'] ?? '';
+
                   return Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -172,6 +174,11 @@ class _ReceiptPageState extends State<ReceiptPage> {
                         const SizedBox(height: 16),
                         Text(
                           'Table No: $tableNo', // Display the tableNo
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Table No: $note', // Display the tableNo
                           style: const TextStyle(fontSize: 16),
                         ),
                         const SizedBox(height: 16),
@@ -210,7 +217,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: Text(
-                            'Your order has been sent. Kindly pay ' +
+                            'Your order will be been sent. Kindly pay ' +
                                 'RM${widget.totalAmount.toStringAsFixed(2)} ' +
                                 'at the counter to proceed with your order.',
                             style: const TextStyle(
@@ -259,6 +266,9 @@ class _ReceiptPageState extends State<ReceiptPage> {
     DocumentReference newOrderRef =
         await FirebaseFirestore.instance.collection('users').doc(userId).collection('order').add({
       'orderDate': DateTime.now(),
+      'checkOutDate': null,
+      'totalAmount': 0,
+      'tableNo': 0,
     });
 
     // Return the ID of the newly created order

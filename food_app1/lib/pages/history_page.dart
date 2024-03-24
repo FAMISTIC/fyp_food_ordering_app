@@ -61,9 +61,8 @@ class _HistoryPageState extends State<HistoryPage> {
               String orderId = orders[index].id;
               
               // Check if checkout date, table no, and total amount are all null
-              if (orderData['checkOutDate'] == null &&
-                  orderData['tableNo'] == null &&
-                  orderData['totalAmount'] == null) {
+              if (orderData['tableNo'] == 0 &&
+                  orderData['totalAmount'] == 0) {
                 // Hide the order if all details are null
                 return const SizedBox.shrink();
               }
@@ -109,7 +108,7 @@ String _formatDate(Timestamp? date) {
   if (date != null) {
     DateTime dateTime = date.toDate();
     String formattedDate =
-        "${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute}";
+        "${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}.${dateTime.second.toString().padLeft(2, '0')}";
     return formattedDate;
   } else {
     return 'N/A'; // Return a default value or handle it as per your requirement

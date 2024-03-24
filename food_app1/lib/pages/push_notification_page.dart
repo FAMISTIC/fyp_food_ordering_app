@@ -85,23 +85,3 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
   
   
 }
-/*
-class PushNotificationService {
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-
-  Future<void> sendNotification(String token, String title, String body) async {
-    try {
-      await _firebaseMessaging.sendMessage(
-        to: token,
-        data: {
-          'title': title,
-          'body': body,
-        },
-      );
-      print('Notification sent successfully');
-    } catch (e) {
-      print('Failed to send notification: $e');
-    }
-  }
-}
-*/
