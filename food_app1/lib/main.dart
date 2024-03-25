@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:food_app1/controllers/firebase_options.dart';
+import 'package:food_app1/pages/push_notification_page.dart';
+import 'package:provider/provider.dart';
 import 'pages/login_page.dart';
 
 void main() async {
@@ -51,13 +53,16 @@ class _MyAppState extends State<MyApp> {
   }
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Dju Cafe',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return ChangeNotifierProvider(
+      create: (context) => PushNotificationState(),
+      child: MaterialApp(
+        title: 'Dju Cafe',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const LoginPage(),
+        debugShowCheckedModeBanner: false,
       ),
-      home: const LoginPage(),
-      debugShowCheckedModeBanner: false,
     );
   }
 }

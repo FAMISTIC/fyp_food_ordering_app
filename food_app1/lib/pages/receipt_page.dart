@@ -5,8 +5,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app1/models/user_model.dart';
 import 'package:food_app1/pages/home_page.dart';
+import 'package:food_app1/pages/push_notification_page.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 // ... (existing imports)
 
@@ -27,6 +29,7 @@ class ReceiptPage extends StatefulWidget {
 }
 
 class _ReceiptPageState extends State<ReceiptPage> {
+  final NotificationManager _notificationManager = NotificationManager();
 
   @override
   void initState(){
@@ -68,7 +71,8 @@ class _ReceiptPageState extends State<ReceiptPage> {
         }
     }
   }
-  triggerNotification() {
+  /*
+  triggerNotification2() {
     AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: 10, 
@@ -77,9 +81,10 @@ class _ReceiptPageState extends State<ReceiptPage> {
         body: 'Order Sent',
       )
     );
-  }
+  }*/
   @override
   Widget build(BuildContext context) {
+    var pushNotificationState = Provider.of<PushNotificationState>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Receipt'),
@@ -231,7 +236,11 @@ class _ReceiptPageState extends State<ReceiptPage> {
                         ElevatedButton(
                           onPressed: () async {
                             sendPushMessage();
-                            triggerNotification();
+                            if (pushNotificationState.pushNotificationEnabled) {
+                              // sendPushMessage();
+                              _notificationManager.triggerNotification();
+                            }
+                                                  
                             String newOrderId = await _createNewOrder(widget.userId);
 
                             // Create a temporary AppUser instance with only userId
