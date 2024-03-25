@@ -1,7 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:food_app1/controllers/firebase_auth_service.dart';
+import 'package:food_app1/models/user_model.dart';
+import 'package:food_app1/pages/feedback_page.dart';
 import 'package:food_app1/pages/push_notification_page.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
+  final AppUser user;
+  const SettingsPage({Key? key, required this.user}) : super(key: key);
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  late AppUser _updatedUser;
+
+   @override
+  void initState() {
+    super.initState();
+    _updatedUser = widget.user;
+    _fetchUserDetails();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,11 +39,12 @@ class SettingsPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ListTile(
-              leading: const Icon(Icons.language),
-              title: const Text('Language'),
+              leading: const Icon(Icons.feedback),
+              title: const Text('Feedback'),
               onTap: () {
-                // Add logic to handle language selection
-                // For example, show a language selection dialog
+                Navigator.push(
+                  context, 
+                  MaterialPageRoute(builder: (context) => FeedbackPage(user: _updatedUser)));
               },
             ),
             ListTile(
@@ -32,7 +53,7 @@ class SettingsPage extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context, 
-                  MaterialPageRoute(builder: (context) => PushNotificationPage()));
+                  MaterialPageRoute(builder: (context) => const PushNotificationPage()));
               },
             ),
             // Add more general settings as needed
@@ -44,13 +65,6 @@ class SettingsPage extends StatelessWidget {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-            ListTile(
-              leading: const Icon(Icons.security),
-              title: const Text('Security'),
-              onTap: () {
-                // Add logic to navigate to the security settings
-              },
-            ),
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Logout'),
@@ -64,5 +78,18 @@ class SettingsPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _fetchUserDetails() async {
+    AppUser? userDetails =
+        await FirebaseAuthService().getUserDetails(widget.user.uid);
+
+    if (userDetails != null) {
+      setState(() {
+        _updatedUser = userDetails;
+      });
+    } else {
+      print("Error fetching user details.");
+    }
   }
 }

@@ -54,7 +54,7 @@ class _NavDrawerState extends State<NavDrawer> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SettingsPage(),
+                  builder: (context) => SettingsPage(user: _updatedUser),
                 ),
               );
             },
