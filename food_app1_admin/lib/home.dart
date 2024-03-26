@@ -1,4 +1,7 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
+import 'package:food_app1_admin/feedback.dart';
 import 'package:food_app1_admin/food_item.dart';
 import 'package:food_app1_admin/order_page.dart';
 import 'package:food_app1_admin/table_reservation.dart';
@@ -72,7 +75,7 @@ class _HomePageState extends  State<HomePage>{
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const UserPage()),
+                MaterialPageRoute(builder: (context) => FeedbackListPage()),
               );
             },
           ),

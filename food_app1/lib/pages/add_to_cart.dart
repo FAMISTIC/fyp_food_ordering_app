@@ -17,7 +17,7 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   double totalAmount = 0;
   int selectedTableNo = 1;
-  TextEditingController _noteController = TextEditingController();
+  final TextEditingController _noteController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -185,8 +185,16 @@ class _CartPageState extends State<CartPage> {
                 'checkOutDate': DateTime.now(),
                 'totalAmount': totalAmount,
                 'tableNo': selectedTableNo,
-                'note': _noteController.text,
-              });
+               // 'note': _noteController.text,
+              });            
+
+              await FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(widget.userId)
+                  .collection('order')
+                  .doc(orderId)
+                  .collection('notes')
+                  .add({'FoodNote': _noteController.text});
 
               // Get the new order ID after updating
               String newOrderId = await _getUserOrderId(widget.userId) ?? '';
@@ -229,8 +237,8 @@ Future<String?> _getUserOrderId(String userId) async {
         .doc(userId)
         .collection('order')
         .add({'orderDate': DateTime.now()});
-
-    // Wait for the new order to be created and return its ID
+    
+        // Wait for the new order to be created and return its ID
     return newOrderRef.id;
   }
 }
