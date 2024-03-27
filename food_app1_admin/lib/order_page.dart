@@ -34,7 +34,7 @@ class _OrderPageState extends State<OrderPage> {
               final user = users[index];
               // Check if user's name is "admin", if yes, skip rendering
               if (user['name'] == "admin") {
-                return SizedBox(); // Return an empty SizedBox to skip rendering
+                return const SizedBox(); // Return an empty SizedBox to skip rendering
               }
 
               final userOrder = user.reference.collection('order').orderBy('orderDate', descending: true).snapshots();
@@ -64,6 +64,7 @@ class _OrderPageState extends State<OrderPage> {
                               ? DateFormat('yyyy-MM-dd').format((order['orderDate'] as Timestamp).toDate())
                               : 'Not Available';
                           final orderTime = _formatDate(order['orderDate']);
+                          //final status = order['status'];
                           final foodItems = order.reference.collection('food').snapshots();
                           final notes = order.reference.collection('notes').snapshots();
 
@@ -90,7 +91,25 @@ class _OrderPageState extends State<OrderPage> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('Date: $orderDate \n$orderTime'),
+                                      Text('Date: $orderDate \n$orderTime\n'),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              _updateStatus(order.reference, 'Cooking');
+                                            },
+                                            child: const Text('Cooking'),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              _updateStatus(order.reference, 'Preparing');
+                                            },
+                                            child: const Text('Preparing'),
+                                          ),
+                                        ],
+                                      ),
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: foodDocs.map((foodDoc) {
@@ -147,6 +166,12 @@ class _OrderPageState extends State<OrderPage> {
     );
   }
 }
+
+Future<void> _updateStatus(DocumentReference reservationRef, String newStatus) async {
+    await reservationRef.set({'status': newStatus}, SetOptions(merge: true))
+                      .then((value) => print("Okay"))
+                      .catchError((error) => print("Failed: $error"));
+  }
 
 String _formatDate(Timestamp? date) {
   if (date != null) {

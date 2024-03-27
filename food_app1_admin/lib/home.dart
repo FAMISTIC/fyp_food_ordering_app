@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_app1_admin/feedback.dart';
 import 'package:food_app1_admin/food_item.dart';
+import 'package:food_app1_admin/notify_user.dart';
 import 'package:food_app1_admin/order_page.dart';
 import 'package:food_app1_admin/table_reservation.dart';
 import 'package:food_app1_admin/user_account.dart';
@@ -75,7 +76,7 @@ class _HomePageState extends  State<HomePage>{
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FeedbackListPage()),
+                MaterialPageRoute(builder: (context) => const FeedbackListPage()),
               );
             },
           ),
@@ -94,14 +95,14 @@ class _HomePageState extends  State<HomePage>{
           ),
           ElevatedButton.icon(
             icon: const Icon(
-            Icons.star,
+            Icons.notifications,
             size: 24.0,
             ),
-            label: const Text('Recommendation'),
+            label: const Text('Send Notification'),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const UserPage()),
+                MaterialPageRoute(builder: (context) => const NotifyPage()),
               );
             },
           ),
