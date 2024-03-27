@@ -91,7 +91,7 @@ class FirebaseAuthService {
             uid: uid,
             email: firebaseUser.email ?? "",
             name: userDoc.data()?['name'] ?? "",
-            phone: userDoc.data()?['phone'] ?? 0,
+            phone: userDoc.data()?['phone'] ?? "",
             imageLink: userDoc.data()?['imageLink'] ?? "",
           );
         } else {
@@ -106,7 +106,7 @@ class FirebaseAuthService {
     }
   }
 
-  Future<void> updateUserProfile(String uid, String name, int phone) async {
+  Future<void> updateUserProfile(String uid, String name, String phone) async {
     try {
       await FirebaseFirestore.instance.collection('users').doc(uid).update({
         'name': name,

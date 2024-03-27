@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously, use_key_in_widget_constructors, library_private_types_in_public_api
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,64 +16,72 @@ class RegistrationPage extends StatefulWidget {
 
 class _RegistrationPageState extends State<RegistrationPage> {
 
+  //final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
+
   Future<void> _register() async {
-    try {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Message'),
-            content: const Text('Registered successfully'),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('Close'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
-      User? user = await FirebaseAuthService().registerWithEmailAndPassword(
-        _emailController.text,
-        _passwordController.text,
-      );
+  try {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Message'),
+          content: const Text('Registered successfully'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+    User? user = await FirebaseAuthService().registerWithEmailAndPassword(
+      _emailController.text,
+      _passwordController.text,
+    );
 
-      // Additional user details
-      String name = _nameController.text;
-      int phone = int.tryParse(_phoneController.text) ?? 0;
-      String imageLink ="";
+    // Additional user details
+    String name = _nameController.text;
+    String phone = _phoneController.text;
+    String imageLink = "";
 
-      // Validate and handle errors for name and age if needed
+    // Retrieve FCM token
+    //String? token = await _firebaseMessaging.getToken();
+    //if (token == null) {
+   //   throw Exception('Failed to get FCM token');
+   // }
 
-      // Store additional user details in Firestore
-      await FirebaseFirestore.instance.collection('users').doc(user!.uid).set({
-        'name': name,
-        'phone': phone,
-        'imageLink':imageLink,
-        //'imageLink': imageLink,
-      });   
-           
-      // Successfully registered
-      print("User registered: ${user.email}");
+    // Store additional user details in Firestore
+    await FirebaseFirestore.instance.collection('users').doc(user!.uid).set({
+      'name': name,
+      'phone': phone,
+      'imageLink': imageLink,
+      //'fcmToken': token, // Store the FCM token
+    });
 
-      // Navigate to login page after successful registration
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginPage()),
-      );
-    } catch (e) {
-      // Handle registration errors
-      print("Failed to register: $e");
-      // You can show a user-friendly message to the user here.
-    }
+    // Successfully registered
+    print("User registered: ${user.email}");
+
+    // Navigate to login page after successful registration
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+    );
+  } catch (e) {
+    // Handle registration errors
+    print("Failed to register: $e");
+    // You can show a user-friendly message to the user here.
   }
+}
+
 
   final _formKey = GlobalKey<FormState>();
 

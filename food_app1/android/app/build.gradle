@@ -69,9 +69,11 @@ flutter {
 }
 
 dependencies {
+    implementation 'com.google.firebase:firebase-appcheck-safetynet:16.0.0'
     implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
     implementation(platform("com.google.firebase:firebase-storage:20.0.0"))
     implementation(platform("com.google.firebase:firebase-auth:20.0.0"))
     implementation(platform("com.google.firebase:firebase-database:20.0.0"))
+    implementation("com.google.firebase:firebase-appcheck")
     implementation "com.google.firebase:firebase-analytics"
 }

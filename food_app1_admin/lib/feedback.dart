@@ -31,6 +31,11 @@ class _FeedbackListPageState extends State<FeedbackListPage> {
             itemCount: users.length,
             itemBuilder: (BuildContext context, int index) {
               final user = users[index];
+              // Check if user's name is "admin", if yes, skip rendering
+              if (user['name'] == "admin") {
+                return SizedBox(); // Return an empty SizedBox to skip rendering
+              }
+
               final userFeedback = user.reference.collection('feedback').snapshots();
 
               return Column(
@@ -81,6 +86,7 @@ class _FeedbackListPageState extends State<FeedbackListPage> {
                 ],
               );
             },
+
           );
         },
       ),

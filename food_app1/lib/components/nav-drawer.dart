@@ -80,7 +80,7 @@ class _NavDrawerState extends State<NavDrawer> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AboutDjuPage(),
+                  builder: (context) => const AboutDjuPage(),
                 ),
               );
             },

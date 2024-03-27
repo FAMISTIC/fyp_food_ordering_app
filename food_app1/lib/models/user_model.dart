@@ -2,7 +2,7 @@ class AppUser {
   final String uid;
   final String email; // Add email property
   late final String name;
-  late final int phone;
+  late final String phone;
   late final String imageLink;
 
   AppUser({

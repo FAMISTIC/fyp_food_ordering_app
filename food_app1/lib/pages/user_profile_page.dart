@@ -80,7 +80,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     if (_formKey.currentState!.validate()) {
       // Get the input values
       String name = _nameController.text;
-      int phone = int.parse(_phoneController.text);
+      String phone = _phoneController.text;
       
 
 

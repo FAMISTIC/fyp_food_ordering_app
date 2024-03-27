@@ -33,7 +33,7 @@ void _submitFeedback() {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
 
     // Add a new document with a generated ID to the 'feedback' collection inside the user's document
-    users.doc(widget.user.uid).collection('feedback').add({
+    users.doc(_updatedUser.uid).collection('feedback').add({
       'feedbacknote': feedback,
       'timestamp': DateTime.now(),
     }).then((_) {
@@ -64,7 +64,7 @@ void _submitFeedback() {
   } else {
     // Show an error message if feedback is empty
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         content: Text('Please enter your feedback.'),
       ),
     );

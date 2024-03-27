@@ -1,11 +1,9 @@
-// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:food_app1_admin/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({Key? key});
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -43,24 +41,30 @@ class _LoginPageState extends State<LoginPage> {
                 String email = _emailController.text;
                 String password = _passwordController.text;
 
-                try {
-                  UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-                    email: email,
-                    password: password,
-                  );
+                if (email == "superadmin@gmail.com") {
+                  try {
+                    UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                      email: email,
+                      password: password,
+                    );
 
-                  // Successful login, navigate to HomePage
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const HomePage()),
-                  );
-                } on FirebaseAuthException catch (e) {
-                  // Failed login, show an error message
-                  print('Error: ${e.message}');
+                    // Successful login, navigate to HomePage
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HomePage()),
+                    );
+                  } on FirebaseAuthException catch (e) {
+                    // Failed login, show an error message
+                    print('Error: ${e.message}');
+                  }
+                } else {
+                  // Disallow login for other users
+                  print("Only 'superadmin@gmail.com' is allowed to log in.");
                 }
               },
               child: const Text('Login'),
             ),
+
           ],
         ),
       ),

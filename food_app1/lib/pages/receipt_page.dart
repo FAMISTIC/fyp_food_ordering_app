@@ -181,7 +181,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                             ),
                             const SizedBox(height: 16),
                             Text(
-                              'User ID: ${widget.userId}',
+                              'Order ID: ${orderId}',
                               style: const TextStyle(fontSize: 16),
                             ),
                             // Display other details...
@@ -258,7 +258,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                             String newOrderId = await _createNewOrder(widget.userId);
 
                             // Create a temporary AppUser instance with only userId
-                            AppUser temporaryUser = AppUser(uid: widget.userId, email: "", name: "", phone: 0, imageLink: "");
+                            AppUser temporaryUser = AppUser(uid: widget.userId, email: "", name: "", phone: "", imageLink: "");
 
                             // Navigate to the HomePage with the temporary AppUser instance
                             Navigator.pushReplacement(

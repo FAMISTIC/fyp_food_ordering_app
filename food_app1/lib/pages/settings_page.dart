@@ -53,7 +53,7 @@ class _SettingsPageState extends State<SettingsPage> {
               onTap: () {
                 Navigator.push(
                   context, 
-                  MaterialPageRoute(builder: (context) => const PushNotificationPage()));
+                  MaterialPageRoute(builder: (context) =>  PushNotificationPage(user: _updatedUser)));
               },
             ),
             // Add more general settings as needed
