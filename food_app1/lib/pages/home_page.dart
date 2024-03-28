@@ -391,6 +391,28 @@ Future<void> _showFavoriteFood(String userId) async {
     favoriteFoodNames.add(doc['foodName']);
   });
 
+  if (favoriteFoodNames.isEmpty) {
+    // Show dialog indicating no favorite foods found
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('No Favorite Foods Found'),
+          content: Text('You haven\'t added any favorite foods yet.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+    return;
+  }
+
   // Query the 'foods' collection for favorited foods
   QuerySnapshot foodsSnapshot = await FirebaseFirestore.instance
       .collection('foods')

@@ -98,7 +98,7 @@ class _HomePageState extends  State<HomePage>{
             Icons.notifications,
             size: 24.0,
             ),
-            label: const Text('Send Notification'),
+            label: const Text('Notify Users Food'),
             onPressed: () {
               Navigator.push(
                 context,

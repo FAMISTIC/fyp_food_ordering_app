@@ -29,84 +29,83 @@ class _TableReservationPageState extends State<TableReservationPage> {
 
           return ListView.builder(
             itemCount: users.length,
-            // Inside the ListView.builder
-itemBuilder: (BuildContext context, int index) {
-  final user = users[index];
-  // Check if user's name is "admin", if yes, skip rendering
-  if (user['name'] == "admin") {
-    return const SizedBox(); // Return an empty SizedBox to skip rendering
-  }
+            itemBuilder: (BuildContext context, int index) {
+              final user = users[index];
+              // Check if user's name is "admin", if yes, skip rendering
+              if (user['name'] == "admin") {
+                return const SizedBox(); // Return an empty SizedBox to skip rendering
+              }
 
-  final userReservations = user.reference.collection('table_reservation').snapshots();
+              final userReservations = user.reference.collection('table_reservation').snapshots();
 
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          user['name'], // Assuming 'name' is a field in your user document
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
-      StreamBuilder(
-        stream: userReservations,
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          final reservations = snapshot.data!.docs;
-          return Column(
-            children: reservations.map((reservation) {
-              final date = reservation['Date'] != null
-                  ? DateFormat('yyyy-MM-dd').format((reservation['Date'] as Timestamp).toDate())
-                  : 'Not Available';
-              final time = reservation['Time'] != null ? reservation['Time'].toString() : 'Not Available';
-              final status = reservation['status'] ?? 'Not Available';
-
-              return Container(
-                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Date: $date'),
-                    Text('Time: $time'),
-                    Text('Status: $status'),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            _updateStatus(reservation.reference, 'accepted');
-                          },
-                          child: const Text('Accept'),
-                        ),
-                        const SizedBox(width: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            _updateStatus(reservation.reference, 'rejected');
-                          },
-                          child: const Text('Reject'),
-                        ),
-                      ],
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      user['name'], // Assuming 'name' is a field in your user document
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                  ],
-                ),
+                  ),
+                  StreamBuilder(
+                    stream: userReservations,
+                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      final reservations = snapshot.data!.docs;
+                      return Column(
+                        children: reservations.map((reservation) {
+                          final date = reservation['Date'] != null
+                              ? DateFormat('yyyy-MM-dd').format((reservation['Date'] as Timestamp).toDate())
+                              : 'Not Available';
+                          final time = reservation['Time'] != null ? reservation['Time'].toString() : 'Not Available';
+                          final status = reservation['status'] ?? 'Not Available';
+
+                          return Container(
+                            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Date: $date'),
+                                Text('Time: $time'),
+                                Text('Status: $status'),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        _updateStatus(reservation.reference, 'accepted');
+                                      },
+                                      child: const Text('Accept'),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        _updateStatus(reservation.reference, 'rejected');
+                                      },
+                                      child: const Text('Reject'),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      );
+                    },
+                  ),
+                ],
               );
-            }).toList(),
-          );
-        },
-      ),
-    ],
-  );
-},
+            },
 
           );
         },

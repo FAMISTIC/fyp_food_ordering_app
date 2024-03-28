@@ -14,7 +14,7 @@ class _FeedbackListPageState extends State<FeedbackListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Table Reservations'),
+        title: const Text('Users Feedback'),
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('users').snapshots(),

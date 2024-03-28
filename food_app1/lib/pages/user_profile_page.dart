@@ -33,11 +33,17 @@ class _UserProfilePageState extends State<UserProfilePage> {
   bool _loading = false;
 
   void selectImage() async {
-    Uint8List img = await pickImage(ImageSource.gallery);
+  Uint8List? img = await pickImage(ImageSource.gallery);
+  if (img != null) {
     setState(() {
       _image = img;
     });
+  } else {
+    // Handle the case where the image selection was canceled or failed
+    print("Image selection canceled or failed.");
   }
+}
+
   void saveProfile() async {
   try {
     if (_image != null) {
