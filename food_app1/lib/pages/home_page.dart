@@ -65,9 +65,44 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       _favoriteItems = favoritesMap;
     });
   }
+  bool isDialogOpen = false;
 
   @override
   Widget build(BuildContext context) {
+    if (!isDialogOpen) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        isDialogOpen = true; // Set the flag to true when dialog is opened
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              contentPadding: EdgeInsets.all(20.0), // Example: Increase content padding
+              title: const Text('Food News'),
+              content: SingleChildScrollView( // Wrap content with SingleChildScrollView if necessary
+                child: Column( // Example: Adjust content to make it bigger
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 800,
+                      width: 200,
+                      child: Text('This is some longer content. ' ),),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                    isDialogOpen = false; // Set the flag to false when dialog is closed
+                  },
+                  child: const Text('Close')
+                )
+              ],
+            );
+          }
+        );
+      });
+    }
     return DefaultTabController(
       initialIndex: 1,
       length: 4,
@@ -641,4 +676,5 @@ Future<String> _getUserOrderId(String userId) async {
       },
     );
   }
+  
 }

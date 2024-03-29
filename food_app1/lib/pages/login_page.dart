@@ -60,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: const Text('Error'),
-                          content: const Text('Invalid email'),
+                          content: const Text('Invalid email or password'),
                           actions: <Widget>[
                             TextButton(
                               child: const Text('Close'),
@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: const Text('Error'),
-                          content: const Text('Invalid password'),
+                          content: const Text('Invalid email or password'),
                           actions: <Widget>[
                             TextButton(
                               child: const Text('Close'),
@@ -117,6 +117,23 @@ class _LoginPageState extends State<LoginPage> {
                 } else {
                   // Show login error message
                   print("Login failed.");
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Error'),
+                          content: const Text('Invalid email or password'),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('Close'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
                 }
               },
               style: ElevatedButton.styleFrom(

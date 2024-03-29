@@ -5,7 +5,7 @@ package="com.example.food_app1">
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <application
-    android:label="food_app1"
+    android:label="DJU Cafe"
     android:name="${applicationName}"
     android:enableOnBackInvokedCallback="true"
     android:icon="@mipmap/ic_launcher">
