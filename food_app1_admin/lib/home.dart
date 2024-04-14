@@ -5,6 +5,7 @@ import 'package:food_app1_admin/feedback.dart';
 import 'package:food_app1_admin/food_item.dart';
 import 'package:food_app1_admin/notify_user.dart';
 import 'package:food_app1_admin/order_page.dart';
+import 'package:food_app1_admin/recommend.dart';
 import 'package:food_app1_admin/table_reservation.dart';
 import 'package:food_app1_admin/user_account.dart';
 
@@ -33,7 +34,7 @@ class _HomePageState extends  State<HomePage>{
             Icons.note,
             size: 24.0,
             ),
-            label: const Text('Order Account'),
+            label: const Text('Food Order'),
             onPressed: () {
               Navigator.push(
                 context,
@@ -106,9 +107,23 @@ class _HomePageState extends  State<HomePage>{
               );
             },
           ),
-        ],
+          ElevatedButton.icon(
+            icon: const Icon(
+            Icons.notifications,
+            size: 24.0,
+            ),
+            label: const Text('Recommend Food'),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) =>  const RecommendPage()),
+              );
+            },
+          ),
+         ],
         ),   
       ),
     );
   }
 }
+

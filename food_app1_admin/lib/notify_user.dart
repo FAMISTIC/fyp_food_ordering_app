@@ -119,7 +119,7 @@ class _NotifyPageState extends State<NotifyPage> {
                                   ),
                                 ),
                               ),
-                              TableCell(
+                             /* TableCell(
                                 child: Container(
                                   color: Colors.greenAccent,
                                   child: Center(
@@ -129,7 +129,7 @@ class _NotifyPageState extends State<NotifyPage> {
                                     ),
                                   ),
                                 ),
-                              ),
+                              ),*/
                               TableCell(
                                 child: Container(
                                   color: Colors.greenAccent,
@@ -156,7 +156,7 @@ class _NotifyPageState extends State<NotifyPage> {
                                     ),
                                   ),
                                 ),
-                                TableCell(
+                            /*    TableCell(
                                   child: SizedBox(
                                     child: Center(
                                       child: Text(
@@ -165,7 +165,7 @@ class _NotifyPageState extends State<NotifyPage> {
                                       ),
                                     ),
                                   ),
-                                ),
+                                ), */
                                 TableCell(
                                   child: Row(
                                     children: [

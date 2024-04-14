@@ -7,6 +7,8 @@ import 'package:food_app1/controllers/firebase_auth_service.dart';
 import 'package:food_app1/components/nav-drawer.dart';
 import 'package:food_app1/models/user_model.dart';
 import 'package:food_app1/pages/add_to_cart.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
 
 enum UserUpdateResult { success, error }
 
@@ -70,8 +72,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     if (!isDialogOpen) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        isDialogOpen = true; // Set the flag to true when dialog is opened
+      WidgetsBinding.instance!.addPostFrameCallback((_) async {
+  isDialogOpen = true; // Set the flag to true when dialog is opened
+  // Get the URL of the photo from Firebase Storage
+        String imageUrl = await _getImageUrlFromFirebase();
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -82,10 +86,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 child: Column( // Example: Adjust content to make it bigger
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      height: 800,
-                      width: 200,
-                      child: Text('This is some longer content. ' ),),
+                    SizedBox(
+                      height: 500,
+                      width: 500,
+                      child: imageUrl.isNotEmpty
+                          ? Image.network(imageUrl)
+                          : Text('Image not available'),
+                    ),
                   ],
                 ),
               ),
@@ -676,5 +683,33 @@ Future<String> _getUserOrderId(String userId) async {
       },
     );
   }
+Future<String> _getImageUrlFromFirebase() async {
+  try {
+    // Query Firestore for documents in "recommend" collection where "status" field is "selected"
+    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance
+        .collection('recommend')
+        .where('status', isEqualTo: 'selected')
+        .get();
+
+    // Check if any documents were found
+    if (snapshot.docs.isNotEmpty) {
+      // Get the first document (assuming there's only one document with status 'selected')
+      var doc = snapshot.docs.first;
+      
+      // Get the value of 'imageUrl' field from the document
+      String imageUrl = doc['imageUrl'];
+
+      return imageUrl; // Return the obtained image URL
+    } else {
+      // If no documents found or no documents with status 'selected'
+      print('No document found with status "selected"');
+      return ''; // Return empty string
+    }
+  } catch (e) {
+    // Handle any errors that occur during the process
+    print('Error getting image URL: $e');
+    return ''; // Return empty string if an error occurs
+  }
+}
   
 }
