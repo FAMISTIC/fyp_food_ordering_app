@@ -169,30 +169,64 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             child: Scaffold(
               appBar: AppBar(
                 title: const Text('Home Page'),
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.black,
+                titleSpacing: 0.0,
+                backgroundColor: const Color.fromARGB(225,245, 93, 66),
+                shadowColor: Colors.grey,
+                foregroundColor: Colors.white,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(25),
+                    bottomLeft: Radius.circular(25),
+                  ),
+                ),
+                elevation: 0.0,
                 actions: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CartPage(userId: _updatedUser.uid, newOrderId: '',),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.fastfood),
+                  Padding(  // Adding padding/margin to the IconButton
+                    padding: const EdgeInsets.only(bottom: 20), // Adjust the margin
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CartPage(userId: _updatedUser.uid, newOrderId: ''),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.fastfood),
+                    ),
                   ),
                 ],
               ),
               drawer: NavDrawer(user: _updatedUser),
+              backgroundColor: const Color.fromARGB(255, 248,244,244),
               body: Column(
                 children: [
+                  const SizedBox(height: 10),
                   SizedBox(
                     height: 50,
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(2),
+                          child: IconButton(
+                            onPressed: () {
+                              _showFavoriteFood(_updatedUser.uid);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.red,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                            icon: const Icon(
+                              Icons.favorite, // Choose the icon you want to use
+                              color: Colors.white, // Color of the icon
+                              size: 30.0, // Icon size (optional)
+                            ),
+                            tooltip: 'Show Favorites',
+                          ),
+                        ),
                         Padding(
                           padding: const EdgeInsets.all(2),
                           child: ElevatedButton(
@@ -202,7 +236,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               });
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.green,
+                              primary: const Color.fromARGB(225,245, 93, 66),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
@@ -224,7 +258,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               });
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.green,
+                              primary: const Color.fromARGB(225, 245, 93, 66),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
@@ -246,7 +280,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               });
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.green,
+                              primary: const Color.fromARGB(225, 245, 93, 66),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
@@ -259,26 +293,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(2),
-                          child: IconButton(
-                            onPressed: () {
-                              _showFavoriteFood(_updatedUser.uid);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.red,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                            ),
-                            icon: const Icon(
-                              Icons.favorite, // Choose the icon you want to use
-                              color: Colors.white, // Color of the icon
-                              size: 30.0, // Icon size (optional)
-                            ),
-                            tooltip: 'Show Favorites',
-                          ),
-                        ),
+                       
                         // Add more buttons for other food types
                       ],
                     ),
@@ -290,27 +305,28 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         children: [
                           const SizedBox(height: 10),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
                             child: TextField(
                               controller: _searchController,
                               onSubmitted: (value) => search(),
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
-                                  borderSide: const BorderSide(color: Colors.white),
+                                  borderSide: const BorderSide(color: Color.fromARGB(225,245, 93, 66)),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 focusedBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(color: Colors.white),
+                                  borderSide: const BorderSide(color: Color.fromARGB(225,245, 93, 66)),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 enabledBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(color: Colors.white),
+                                  borderSide: const BorderSide(color: Color.fromARGB(225,245, 93, 66)),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 hintText: "Search here..",
+                                hintStyle: const TextStyle(color: Color.fromARGB(225,245, 93, 66)),
                                 prefixIcon: const Icon(
                                   Icons.search,
-                                  color: Colors.grey,
+                                  color: Color.fromARGB(225,245, 93, 66),
                                 ),
                               ),
                             ),
@@ -327,7 +343,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
                                 decoration: BoxDecoration(
                                   //color: const Color.fromARGB(255, 21, 180, 26),
-                                  color: const Color.fromARGB(226,135,67, 4),
+                                  color: const Color.fromARGB(225,245, 93, 66),
                                   borderRadius: BorderRadius.circular(12.0),
                                   boxShadow: [
                                     BoxShadow(
@@ -389,7 +405,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                     (_favoriteItems[filteredData[i]['name']] ?? false)
                                                       ? Icons.favorite
                                                       : Icons.favorite_border,
-                                                    color: Colors.red,
+                                                    color: Colors.white,
                                                   ),
                                                   onPressed: () {
                                                     // Toggle the favorite state
