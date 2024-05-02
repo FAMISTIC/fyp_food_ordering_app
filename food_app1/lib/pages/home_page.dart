@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              contentPadding: EdgeInsets.all(20.0), // Example: Increase content padding
+              contentPadding: const EdgeInsets.all(20.0), // Example: Increase content padding
               title: const Text('Food News'),
               content: SingleChildScrollView( // Wrap content with SingleChildScrollView if necessary
                 child: Column( // Example: Adjust content to make it bigger
@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       width: 500,
                       child: imageUrl.isNotEmpty
                           ? Image.network(imageUrl)
-                          : Text('Image not available'),
+                          : const Text('Image not available'),
                     ),
                   ],
                 ),
@@ -169,6 +169,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             child: Scaffold(
               appBar: AppBar(
                 title: const Text('Home Page'),
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
                 actions: [
                   IconButton(
                     onPressed: () {
@@ -259,22 +261,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(2),
-                          child: ElevatedButton(
+                          child: IconButton(
                             onPressed: () {
                               _showFavoriteFood(_updatedUser.uid);
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.blue,
+                              primary: Colors.red,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                             ),
-                            child: const Center(
-                              child: Text(
-                                'Show Favorites',
-                                style: TextStyle(fontSize: 18, color: Colors.white),
-                              ),
+                            icon: const Icon(
+                              Icons.favorite, // Choose the icon you want to use
+                              color: Colors.white, // Color of the icon
+                              size: 30.0, // Icon size (optional)
                             ),
+                            tooltip: 'Show Favorites',
                           ),
                         ),
                         // Add more buttons for other food types
@@ -322,9 +324,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               child: Container(
                                 width: 400,
                                 margin: const EdgeInsets.all(10),
-                                padding: const EdgeInsets.all(8),
+                                padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
                                 decoration: BoxDecoration(
-                                  color: const Color.fromARGB(255, 21, 180, 26),
+                                  //color: const Color.fromARGB(255, 21, 180, 26),
+                                  color: const Color.fromARGB(226,135,67, 4),
                                   borderRadius: BorderRadius.circular(12.0),
                                   boxShadow: [
                                     BoxShadow(
@@ -439,14 +442,14 @@ Future<void> _showFavoriteFood(String userId) async {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('No Favorite Foods Found'),
-          content: Text('You haven\'t added any favorite foods yet.'),
+          title: const Text('No Favorite Foods Found'),
+          content: const Text('You haven\'t added any favorite foods yet.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );
@@ -487,7 +490,7 @@ Future<void> _showFavoriteFood(String userId) async {
                       onPressed: () {
                         _AddToCart(favoriteFoods[index], userId);
                       },
-                      icon: Icon(Icons.add_shopping_cart),
+                      icon: const Icon(Icons.add_shopping_cart),
                     ),
                   ],
                 ),
