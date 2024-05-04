@@ -23,26 +23,79 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        foregroundColor: const Color.fromARGB(224, 234, 47, 13),
+        shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(25),
+                    bottomLeft: Radius.circular(25),
+                  ),
+                ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          //mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Text('Login', style: TextStyle(fontSize: 40, fontWeight: FontWeight.w700, color:  Color.fromARGB(224, 234, 47, 13))),
+            const SizedBox(height: 40),
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.email),
+              decoration: InputDecoration(
+                labelText: 'Email', 
+                hintText: 'email@gmail.com',
+                filled: true,
+                fillColor: Colors.white,
+                prefixIcon: const Icon(Icons.email, color: Color.fromARGB(224, 234, 47, 13)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8), // For rounded corners
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(225, 245, 93, 66), // Default border color
+                    width: 1, // Border width
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(225, 245, 93, 66), // Border color when the field is not focused
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(224, 234, 47, 13), // Border color when the field is focused
+                    width: 2, // Border width when focused
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 16.0),
             TextField(
               controller: _passwordController,
-              decoration: const InputDecoration(
+              decoration:  InputDecoration(
                 labelText: 'Password',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock),
+                hintText: '********',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8), // For rounded corners
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(225, 245, 93, 66), // Default border color
+                    width: 1, // Border width
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(225, 245, 93, 66), // Border color when the field is not focused
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(224, 234, 47, 13), // Border color when the field is focused
+                    width: 2, // Border width when focused
+                  ),
+                ),
+                prefixIcon: const Icon(Icons.lock, color: Color.fromARGB(224, 234, 47, 13)),
               ),
               obscureText: true,
             ),
@@ -137,8 +190,9 @@ class _LoginPageState extends State<LoginPage> {
                 }
               },
               style: ElevatedButton.styleFrom(
+                primary: const Color.fromARGB(225,245, 93, 66),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(50.0),
                 ),
               ),
               child: Container(
@@ -147,11 +201,37 @@ class _LoginPageState extends State<LoginPage> {
                 child: const Center(
                   child: Text(
                     'Login',
-                    style: TextStyle(fontSize: 18.0),
+                    style: TextStyle(fontSize: 18.0, color: Colors.white),
                   ),
                 ),
               ),
             ),
+            const SizedBox(height: 5),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Don't have an account? ", style: TextStyle(fontSize: 15.0, color: Colors.black),),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => RegistrationPage()),
+                        );
+                      },
+                      child: const Text(
+                        "Register Here",
+                        style: TextStyle(fontSize: 15.0, color: Color.fromARGB(225, 245, 93, 66)),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 50),
+            const Text('Or sign up with', style: TextStyle(color: Colors.black),),
             ElevatedButton(
               onPressed: () async {
 
@@ -181,44 +261,41 @@ class _LoginPageState extends State<LoginPage> {
                 
               },
               style: ElevatedButton.styleFrom(
+                primary: const Color.fromARGB(225,245, 93, 66),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(50.0),
                 ),
               ),
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 15.0),
-                child: const Center(
-                  child: Text(
-                    'Sign in with Google',
-                    style: TextStyle(fontSize: 18.0),
+                child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Container(
+                    // decoration: BoxDecoration(color: Colors.blue),
+                      width: 30,
+                      height: 30,
+                      decoration: const BoxDecoration(
+                        color: Colors.white, // Change to desired background color
+                        shape: BoxShape.circle,
+                      ),
+                      child:
+                      ClipOval(
+                        child: Image.asset(
+                            'images/google.png',
+                            fit:BoxFit.cover
+                        ),
+                      )                  
                   ),
-                ),
+                  const SizedBox(width: 8),
+                  const Text('Sign-in with Google',  style: TextStyle(fontSize: 18.0, color: Colors.white),)
+                ],
+              ),
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => RegistrationPage()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 15.0),
-                child: const Center(
-                  child: Text(
-                    'Register',
-                    style: TextStyle(fontSize: 18.0),
-                  ),
-                ),
-              ),
-            ),
+            
           ],
         ),
       ),

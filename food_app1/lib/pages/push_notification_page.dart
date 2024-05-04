@@ -108,6 +108,17 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Push Notification Button'),
+        titleSpacing: 0.0,
+        elevation: 0.0,
+        backgroundColor: const Color.fromARGB(225,245, 93, 66),
+        shadowColor: Colors.grey,
+        foregroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(25),
+                    bottomLeft: Radius.circular(25),
+                  ),
+                ),
       ),
       body: Center(
         child: Column(

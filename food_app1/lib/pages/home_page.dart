@@ -38,43 +38,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _fetchUserDetails();
     _searchController = TextEditingController();
     _initializeFavorites(widget.user.uid); // Initialize favorites
-  }
-
-  String searchQuery = '';
-  String _selectedFoodType = '';
-
-  void search() {
-    String query = _searchController.text.toLowerCase();
-    setState(() {
-      searchQuery = query.toLowerCase();
+     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _showDialog(context);
     });
   }
-
-  // Initialize favorites based on Firebase data
-  Future<void> _initializeFavorites(String userId) async {
-    CollectionReference favoriteCollection =
-        FirebaseFirestore.instance.collection('users').doc(userId).collection('favorites');
-
-    QuerySnapshot favoritesSnapshot = await favoriteCollection.get();
-    Map<String, bool> favoritesMap = {};
-
-    for (QueryDocumentSnapshot doc in favoritesSnapshot.docs) {
-      String foodName = (doc?.data() as Map<String, dynamic>?)?['foodName'] ?? '';
-      favoritesMap[foodName] = true;
-    }
-
-    setState(() {
-      _favoriteItems = favoritesMap;
-    });
-  }
-  bool isDialogOpen = false;
-
-  @override
-  Widget build(BuildContext context) {
-    if (!isDialogOpen) {
+  void _showDialog(BuildContext context){
       WidgetsBinding.instance!.addPostFrameCallback((_) async {
-  isDialogOpen = true; // Set the flag to true when dialog is opened
-  // Get the URL of the photo from Firebase Storage
+      isDialogOpen = true; // Set the flag to true when dialog is opened
+       // Get the URL of the photo from Firebase Storage
         String imageUrl = await _getImageUrlFromFirebase();
         showDialog(
           context: context,
@@ -109,7 +80,40 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           }
         );
       });
+  }
+
+  String searchQuery = '';
+  String _selectedFoodType = '';
+
+  void search() {
+    String query = _searchController.text.toLowerCase();
+    setState(() {
+      searchQuery = query.toLowerCase();
+    });
+  }
+
+  // Initialize favorites based on Firebase data
+  Future<void> _initializeFavorites(String userId) async {
+    CollectionReference favoriteCollection =
+        FirebaseFirestore.instance.collection('users').doc(userId).collection('favorites');
+
+    QuerySnapshot favoritesSnapshot = await favoriteCollection.get();
+    Map<String, bool> favoritesMap = {};
+
+    for (QueryDocumentSnapshot doc in favoritesSnapshot.docs) {
+      String foodName = (doc?.data() as Map<String, dynamic>?)?['foodName'] ?? '';
+      favoritesMap[foodName] = true;
     }
+
+    setState(() {
+      _favoriteItems = favoritesMap;
+    });
+  }
+  bool isDialogOpen = false;
+
+  @override
+  Widget build(BuildContext context) {
+    
     return DefaultTabController(
       initialIndex: 1,
       length: 4,
@@ -168,7 +172,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             },
             child: Scaffold(
               appBar: AppBar(
-                title: const Text('Home Page'),
+                title: const Center(child: Text('Home Page')),
                 titleSpacing: 0.0,
                 backgroundColor: const Color.fromARGB(225,245, 93, 66),
                 shadowColor: Colors.grey,

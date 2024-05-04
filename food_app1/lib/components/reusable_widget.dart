@@ -6,7 +6,7 @@ Image logoWidget(String imageName) {
     fit: BoxFit.fitWidth,
     width: 240,
     height: 240,
-    color: Colors.white,
+    color: const Color.fromARGB(225, 245, 93, 66),
   );
 }
 
@@ -22,21 +22,37 @@ TextFormField reusableTextField(
     enableSuggestions: !isPasswordType,
     autocorrect: !isPasswordType,
     cursorColor: Colors.white,
-    style: TextStyle(color: Color.fromARGB(255, 255, 255, 255).withOpacity(0.9)),
+    style: TextStyle(color: Colors.black.withOpacity(0.9)),
     decoration: InputDecoration(
       prefixIcon: Icon(
         icon,
-        color: const Color.fromARGB(179, 0, 0, 0),
+        color: const Color.fromARGB(225, 245, 93, 66),
       ),
       labelText: text,
       labelStyle: TextStyle(color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.9)),
       filled: true,
       floatingLabelBehavior: FloatingLabelBehavior.never,
-      fillColor: const Color.fromARGB(255, 172, 37, 37).withOpacity(0.3),
+      fillColor:  Colors.white.withOpacity(0.3),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(30.0),
-        borderSide: const BorderSide(width: 0, style: BorderStyle.none),
-      ),
+                  borderRadius: BorderRadius.circular(8), // For rounded corners
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(225, 245, 93, 66), // Default border color
+                    width: 1, // Border width
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(225, 245, 93, 66), // Border color when the field is not focused
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(224, 234, 47, 13), // Border color when the field is focused
+                    width: 2, // Border width when focused
+                  ),
+                ),
       errorMaxLines: 2,
     ),
     keyboardType: isPasswordType

@@ -133,6 +133,17 @@ class _UserProfilePageState extends State<UserProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('User Profile'),
+        titleSpacing: 0.0,
+        elevation: 0.0,
+        backgroundColor: const Color.fromARGB(225,245, 93, 66),
+        shadowColor: Colors.grey,
+        foregroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(25),
+                    bottomLeft: Radius.circular(25),
+                  ),
+                ),
         actions: [
           // Use an icon button to trigger the update function and the save data function
           IconButton(

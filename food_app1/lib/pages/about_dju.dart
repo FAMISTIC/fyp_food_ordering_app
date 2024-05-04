@@ -8,6 +8,17 @@ class AboutDjuPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('About Dju'),
+        titleSpacing: 0.0,
+        elevation: 0.0,
+        backgroundColor: const Color.fromARGB(225,245, 93, 66),
+        shadowColor: Colors.grey,
+        foregroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(25),
+                    bottomLeft: Radius.circular(25),
+                  ),
+                ),
       ),
       body: const Padding(
         padding: EdgeInsets.all(16.0),

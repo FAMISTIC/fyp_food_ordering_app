@@ -32,10 +32,24 @@ class _TableReservationPageState extends State<TableReservationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Table Reservation'),
+        title: const Center(child: Padding(
+          padding: EdgeInsets.only(right: 55),
+          child: Text('Table Reservation'),
+        )),
+        titleSpacing: 0.0,
+        elevation: 0.0,
+        backgroundColor: const Color.fromARGB(225,245, 93, 66),
+        shadowColor: Colors.grey,
+        foregroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(25),
+                    bottomLeft: Radius.circular(25),
+                  ),
+                ),
         actions: [
           IconButton(
-            icon: Icon(Icons.history),
+            icon: const Icon(Icons.history),
             onPressed: () {
               Navigator.push(
                 context,
@@ -72,6 +86,20 @@ class _TableReservationPageState extends State<TableReservationPage> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
+                style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.resolveWith<Color>((states) {
+                    if (states.contains(MaterialState.pressed)) {
+                      return Colors.white; // Color when pressed
+                    }
+                    return Colors.white; // Default color
+                  }),
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
+                    if (states.contains(MaterialState.pressed)) {
+                      return const Color.fromARGB(225,245, 93, 66); // Color when pressed
+                    }
+                    return const Color.fromARGB(225,245, 93, 66); // Default color
+                  }),
+                ),
                 onPressed: _submitReservation,
                 child: const Text('Make Reservation'),
               ),

@@ -88,16 +88,23 @@ class _RegistrationPageState extends State<RegistrationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _formKey,
       appBar: AppBar(
-      backgroundColor: Colors.transparent,
-        title: const Text('Registration Page'),
+        foregroundColor: const Color.fromARGB(224, 234, 47, 13),
+        shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(25),
+                    bottomLeft: Radius.circular(25),
+                  ),
+                ),
       ),
+      key: _formKey,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          //mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Text('Registration', style: TextStyle(fontSize: 40, fontWeight: FontWeight.w700, color:  Color.fromARGB(224, 234, 47, 13))),
+            const SizedBox(height: 40),
             reusableTextField(
                   "Enter Email Id",
                   Icons.person_outline,
@@ -262,8 +269,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 _register();
               },
               style: ElevatedButton.styleFrom(
+                primary: const Color.fromARGB(225,245, 93, 66),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(50.0),
                 ),
               ),
               child: Container(
@@ -272,7 +280,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 child: const Center(
                   child: Text(
                     'Register',
-                    style: TextStyle(fontSize: 18.0),
+                    style: TextStyle(fontSize: 18.0, color: Colors.white),
                   ),
                 ),
               ),

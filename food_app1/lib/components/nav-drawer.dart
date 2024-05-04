@@ -34,103 +34,123 @@ class _NavDrawerState extends State<NavDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: <Widget>[
-          const SizedBox(height: 20),
-          CircleAvatar(
-            radius: 64,
-            backgroundImage: NetworkImage(_updatedUser.imageLink),
-          ),
-          const SizedBox(height: 20),
-          Text(_updatedUser.name),
-          const SizedBox(height: 20),
-           ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text('Settings'),
-            onTap: () {
-              Navigator.of(context).pop(); // Close the drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SettingsPage(user: _updatedUser),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.history),
-            title: const Text('History'),
-            onTap: () {
-              Navigator.of(context).pop(); // Close the drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HistoryPage(user: _updatedUser),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.info),
-            title: const Text('About Dju'),
-            onTap: () {
-              Navigator.of(context).pop(); // Close the drawer
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AboutDjuPage(),
-                ),
-              );
-            },
-          ),
-
-          ListTile(
-            leading: const Icon(Icons.verified_user),
-            title: const Text('My Account'),
-            onTap: () async {
-              final result = await Navigator.push<UserUpdateResult>(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => UserProfilePage(user: _updatedUser),
-                ),
-              );
-
-              if (result == UserUpdateResult.success) {
-                await _fetchUserDetails();
-              }
-            },
-          ),
-          ListTile(
-          leading: const Icon(Icons.table_restaurant),
-          title: const Text('Table Reservation'),
-          onTap: () {
-            Navigator.of(context).pop(); // Close the drawer
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => TableReservationPage(user: _updatedUser), // Navigate to TableReservationPage
+    return Container(
+      color: const Color.fromARGB(225, 245, 93, 66),
+      child: Drawer(
+        backgroundColor: const Color.fromARGB(225, 245, 93, 66),
+        shape:  const ContinuousRectangleBorder(
+              borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(50),
+                topRight: Radius.circular(50)),
               ),
-            );
-          },
-        ),
-
-          ListTile(
-            leading: const Icon(Icons.exit_to_app),
-            title: const Text('Logout'),
-            onTap: () => {
-              GoogleSignIn().signOut(),
-              FirebaseAuth.instance.signOut().then((value) {
-                print("Signed Out");
+        child: ListView(
+          padding: const EdgeInsets.all(16.0),
+          children: <Widget>[
+            const SizedBox(height: 20),
+            CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: 68,
+              child: CircleAvatar(
+                radius: 64,
+                backgroundImage: NetworkImage(_updatedUser.imageLink),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(_updatedUser.name, 
+            style: const TextStyle(color: Colors.white),),
+            const SizedBox(height: 20),
+             ListTile(
+              leading: const Icon(Icons.settings, color: Colors.white,),
+              title: const Text('Settings', 
+              style: const TextStyle(color: Colors.white),),
+              onTap: () {
+                Navigator.of(context).pop(); // Close the drawer
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(
+                    builder: (context) => SettingsPage(user: _updatedUser),
+                  ),
                 );
-              }),
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.history, color: Colors.white,),
+              title: const Text('History', 
+              style: const TextStyle(color: Colors.white),),
+              onTap: () {
+                Navigator.of(context).pop(); // Close the drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HistoryPage(user: _updatedUser),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.info, color: Colors.white,),
+              title: const Text('About Dju', 
+              style: const TextStyle(color: Colors.white),),
+              onTap: () {
+                Navigator.of(context).pop(); // Close the drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AboutDjuPage(),
+                  ),
+                );
+              },
+            ),
+      
+            ListTile(
+              leading: const Icon(Icons.verified_user, color: Colors.white,),
+              title: const Text('My Account', 
+              style: const TextStyle(color: Colors.white),),
+              onTap: () async {
+                final result = await Navigator.push<UserUpdateResult>(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserProfilePage(user: _updatedUser),
+                  ),
+                );
+      
+                if (result == UserUpdateResult.success) {
+                  await _fetchUserDetails();
+                }
+              },
+            ),
+            ListTile(
+            leading: const Icon(Icons.table_restaurant, color: Colors.white,),
+            title: const Text('Table Reservation', 
+            style: const TextStyle(color: Colors.white),),
+            onTap: () {
+              Navigator.of(context).pop(); // Close the drawer
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TableReservationPage(user: _updatedUser), // Navigate to TableReservationPage
+                ),
+              );
             },
           ),
-        ],
+      
+            ListTile(
+              leading: const Icon(Icons.exit_to_app, color: Colors.white,),
+              title: const Text('Logout', 
+              style: const TextStyle(color: Colors.white),),
+              onTap: () => {
+                GoogleSignIn().signOut(),
+                FirebaseAuth.instance.signOut().then((value) {
+                  print("Signed Out");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                  );
+                }),
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
