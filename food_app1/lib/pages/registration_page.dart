@@ -88,6 +88,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         foregroundColor: const Color.fromARGB(224, 234, 47, 13),
         shape: const RoundedRectangleBorder(

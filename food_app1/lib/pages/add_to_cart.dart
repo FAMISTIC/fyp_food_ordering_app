@@ -22,8 +22,23 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('Cart'),
+        titleSpacing: 0.0,
+        title: const Center(child: Padding(
+          padding: EdgeInsets.only(right: 55.0),
+          child: Text('Cart'),
+        )),
+        backgroundColor: const Color.fromARGB(225,245, 93, 66),
+                shadowColor: Colors.grey,
+                foregroundColor: Colors.white,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(25),
+                    bottomLeft: Radius.circular(25),
+                  ),
+                ),
+                elevation: 0.0,
       ),
       body: FutureBuilder<String?>(
         future: _getUserOrderId(widget.userId),
@@ -169,52 +184,60 @@ class _CartPageState extends State<CartPage> {
         },
       ),
       bottomNavigationBar: BottomAppBar(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ElevatedButton(
-            onPressed: () async {
-              String orderId = await _getUserOrderId(widget.userId) ?? '';
-
-              await FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(widget.userId)
-                  .collection('order')
-                  .doc(orderId)
-                  .update({
-                'orderDate': DateTime.now(),
-                'checkOutDate': DateTime.now(),
-                'totalAmount': totalAmount,
-                'tableNo': selectedTableNo,
-               // 'note': _noteController.text,
-              });            
-
-              await FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(widget.userId)
-                  .collection('order')
-                  .doc(orderId)
-                  .collection('notes')
-                  .add({'FoodNote': _noteController.text});
-
-              // Get the new order ID after updating
-              String newOrderId = await _getUserOrderId(widget.userId) ?? '';
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ReceiptPage(userId: widget.userId, orderIdFuture: Future.value(newOrderId), totalAmount: totalAmount),
-                ),
-              );
-
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Checkout successful'),
-                ),
-              );
-            },
-            child: const Text('Checkout'),
-          ),
-
+        child: ElevatedButton(
+          onPressed: () async {
+            String orderId = await _getUserOrderId(widget.userId) ?? '';
+        
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(widget.userId)
+                .collection('order')
+                .doc(orderId)
+                .update({
+              'orderDate': DateTime.now(),
+              'checkOutDate': DateTime.now(),
+              'totalAmount': totalAmount,
+              'tableNo': selectedTableNo,
+             // 'note': _noteController.text,
+            });            
+        
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(widget.userId)
+                .collection('order')
+                .doc(orderId)
+                .collection('notes')
+                .add({'FoodNote': _noteController.text});
+        
+            // Get the new order ID after updating
+            String newOrderId = await _getUserOrderId(widget.userId) ?? '';
+        
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ReceiptPage(userId: widget.userId, orderIdFuture: Future.value(newOrderId), totalAmount: totalAmount),
+              ),
+            );
+        
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Checkout successful'),
+              ),
+            );
+          },
+          style: ElevatedButton.styleFrom(
+              primary: const Color.fromARGB(225,245, 93, 66),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(50.0),
+              ),
+            ),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 15.0),
+            child: const Center(
+              child:  Text('Checkout',
+              style: TextStyle(fontSize: 18.0, color: Colors.white),
+              ))),
         ),
       ),
     );

@@ -106,6 +106,7 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
   Widget build(BuildContext context) {
     var pushNotificationState = Provider.of<PushNotificationState>(context);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Push Notification Button'),
         titleSpacing: 0.0,

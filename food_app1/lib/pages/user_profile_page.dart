@@ -131,8 +131,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('User Profile'),
+        title: const Center(child: Text('User Profile')),
         titleSpacing: 0.0,
         elevation: 0.0,
         backgroundColor: const Color.fromARGB(225,245, 93, 66),

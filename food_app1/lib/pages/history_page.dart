@@ -27,10 +27,14 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Center(child: Padding(
           padding: EdgeInsets.all(8.0),
-          child: Text('Order History'),
+          child: Center(child: Padding(
+            padding: EdgeInsets.only(right: 55),
+            child: Text('Order History'),
+          )),
         )),
         titleSpacing: 0.0,
         elevation: 0.0,
@@ -122,7 +126,7 @@ String _formatDate(Timestamp? date) {
   if (date != null) {
     DateTime dateTime = date.toDate();
     String formattedDate =
-        "${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}.${dateTime.second.toString().padLeft(2, '0')}";
+        "${dateTime.day}/${dateTime.month}/${dateTime.year} \nTime: ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}.${dateTime.second.toString().padLeft(2, '0')}";
     return formattedDate;
   } else {
     return 'N/A'; // Return a default value or handle it as per your requirement

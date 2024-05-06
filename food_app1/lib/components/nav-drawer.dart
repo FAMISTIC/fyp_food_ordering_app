@@ -62,7 +62,7 @@ class _NavDrawerState extends State<NavDrawer> {
              ListTile(
               leading: const Icon(Icons.settings, color: Colors.white,),
               title: const Text('Settings', 
-              style: const TextStyle(color: Colors.white),),
+              style: TextStyle(color: Colors.white),),
               onTap: () {
                 Navigator.of(context).pop(); // Close the drawer
                 Navigator.push(
@@ -76,7 +76,7 @@ class _NavDrawerState extends State<NavDrawer> {
             ListTile(
               leading: const Icon(Icons.history, color: Colors.white,),
               title: const Text('History', 
-              style: const TextStyle(color: Colors.white),),
+              style: TextStyle(color: Colors.white),),
               onTap: () {
                 Navigator.of(context).pop(); // Close the drawer
                 Navigator.push(
@@ -90,7 +90,7 @@ class _NavDrawerState extends State<NavDrawer> {
             ListTile(
               leading: const Icon(Icons.info, color: Colors.white,),
               title: const Text('About Dju', 
-              style: const TextStyle(color: Colors.white),),
+              style: TextStyle(color: Colors.white),),
               onTap: () {
                 Navigator.of(context).pop(); // Close the drawer
                 Navigator.push(
@@ -105,7 +105,7 @@ class _NavDrawerState extends State<NavDrawer> {
             ListTile(
               leading: const Icon(Icons.verified_user, color: Colors.white,),
               title: const Text('My Account', 
-              style: const TextStyle(color: Colors.white),),
+              style: TextStyle(color: Colors.white),),
               onTap: () async {
                 final result = await Navigator.push<UserUpdateResult>(
                   context,
@@ -122,7 +122,7 @@ class _NavDrawerState extends State<NavDrawer> {
             ListTile(
             leading: const Icon(Icons.table_restaurant, color: Colors.white,),
             title: const Text('Table Reservation', 
-            style: const TextStyle(color: Colors.white),),
+            style: TextStyle(color: Colors.white),),
             onTap: () {
               Navigator.of(context).pop(); // Close the drawer
               Navigator.push(
@@ -137,7 +137,7 @@ class _NavDrawerState extends State<NavDrawer> {
             ListTile(
               leading: const Icon(Icons.exit_to_app, color: Colors.white,),
               title: const Text('Logout', 
-              style: const TextStyle(color: Colors.white),),
+              style: TextStyle(color: Colors.white),),
               onTap: () => {
                 GoogleSignIn().signOut(),
                 FirebaseAuth.instance.signOut().then((value) {

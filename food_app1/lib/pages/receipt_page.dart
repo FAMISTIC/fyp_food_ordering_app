@@ -76,6 +76,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
   Widget build(BuildContext context) {
     var pushNotificationState = Provider.of<PushNotificationState>(context);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         titleSpacing: 0.0,
         elevation: 0.0,
@@ -262,6 +263,12 @@ class _ReceiptPageState extends State<ReceiptPage> {
                         const SizedBox(height: 16),
                                                     const SizedBox(height: 16),
                         ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                          primary: const Color.fromARGB(225,245, 93, 66),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50.0),
+                          ),
+                        ),
                           onPressed: () async {
                             sendPushMessage();
                             if (pushNotificationState.pushNotificationEnabled) {
@@ -284,7 +291,13 @@ class _ReceiptPageState extends State<ReceiptPage> {
                               ),
                             );
                           },
-                          child: const Text('Confirm Order'),
+                          child:  Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(vertical: 15.0),
+                              child: const Center(
+                                child:  Text('Confirm Order',
+                                style: TextStyle(fontSize: 18.0, color: Colors.white),
+                                ))),
                         ),
 
                           ],

@@ -7,7 +7,6 @@ import 'package:food_app1/controllers/firebase_auth_service.dart';
 import 'package:food_app1/components/nav-drawer.dart';
 import 'package:food_app1/models/user_model.dart';
 import 'package:food_app1/pages/add_to_cart.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 
 enum UserUpdateResult { success, error }
@@ -171,6 +170,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   false;
             },
             child: Scaffold(
+              resizeToAvoidBottomInset: false,
               appBar: AppBar(
                 title: const Center(child: Text('Home Page')),
                 titleSpacing: 0.0,

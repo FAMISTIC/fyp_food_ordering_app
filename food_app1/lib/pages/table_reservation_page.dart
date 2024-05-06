@@ -31,11 +31,9 @@ class _TableReservationPageState extends State<TableReservationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Center(child: Padding(
-          padding: EdgeInsets.only(right: 55),
-          child: Text('Table Reservation'),
-        )),
+        title: const Center(child: Text('Table Reservation')),
         titleSpacing: 0.0,
         elevation: 0.0,
         backgroundColor: const Color.fromARGB(225,245, 93, 66),
@@ -68,9 +66,29 @@ class _TableReservationPageState extends State<TableReservationPage> {
               TextFormField(
                 readOnly: true,
                 onTap: () => _selectDate(context),
-                decoration: const InputDecoration(
+                decoration:  InputDecoration(
                   labelText: 'Date',
-                  suffixIcon: Icon(Icons.calendar_today),
+                  suffixIcon: const Icon(Icons.calendar_today),
+                  border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8), // For rounded corners
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(225, 245, 93, 66), // Default border color
+                    width: 1, // Border width
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(225, 245, 93, 66), // Border color when the field is not focused
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(224, 234, 47, 13), // Border color when the field is focused
+                    width: 2, // Border width when focused
+                  ),
+                ),
                 ),
                 initialValue: _selectedDate.toString(),
               ),
@@ -78,9 +96,29 @@ class _TableReservationPageState extends State<TableReservationPage> {
               TextFormField(
                 readOnly: true,
                 onTap: () => _selectTime(context),
-                decoration: const InputDecoration(
+                decoration:  InputDecoration(
                   labelText: 'Time',
                   suffixIcon: Icon(Icons.access_time),
+                  border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8), // For rounded corners
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(225, 245, 93, 66), // Default border color
+                    width: 1, // Border width
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(225, 245, 93, 66), // Border color when the field is not focused
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(224, 234, 47, 13), // Border color when the field is focused
+                    width: 2, // Border width when focused
+                  ),
+                ),
                 ),
                 initialValue: _selectedTime.format(context),
               ),

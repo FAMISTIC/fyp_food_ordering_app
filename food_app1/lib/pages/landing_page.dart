@@ -27,7 +27,7 @@ class LandingPage extends StatelessWidget {
             const Icon(
               Icons.restaurant,
               size: 100,
-              color: Colors.orange,
+              color:  Color.fromARGB(225,245, 93, 66),
             ),
             const SizedBox(height: 20),
             const Text(

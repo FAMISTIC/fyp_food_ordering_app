@@ -23,20 +23,13 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        foregroundColor: const Color.fromARGB(224, 234, 47, 13),
-        shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    bottomRight: Radius.circular(25),
-                    bottomLeft: Radius.circular(25),
-                  ),
-                ),
-      ),
-      body: Padding(
+        resizeToAvoidBottomInset: false,
+        body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           //mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const SizedBox(height: 100,),
             const Text('Login', style: TextStyle(fontSize: 40, fontWeight: FontWeight.w700, color:  Color.fromARGB(224, 234, 47, 13))),
             const SizedBox(height: 40),
             TextField(

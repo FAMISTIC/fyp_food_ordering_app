@@ -7,7 +7,13 @@ class AboutDjuPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('About Dju'),
+        title: const Center(child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Center(child: Padding(
+            padding: EdgeInsets.only(right: 55),
+            child: Text('About DJU Cafe'),
+          )),
+        )),
         titleSpacing: 0.0,
         elevation: 0.0,
         backgroundColor: const Color.fromARGB(225,245, 93, 66),

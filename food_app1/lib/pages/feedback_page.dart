@@ -74,6 +74,7 @@ void _submitFeedback() {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         titleSpacing: 0.0,
         elevation: 0.0,
@@ -107,7 +108,19 @@ void _submitFeedback() {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _submitFeedback,
-              child: const Text('Submit Feedback'),
+              style: ElevatedButton.styleFrom(
+              primary: const Color.fromARGB(225,245, 93, 66),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(50.0),
+              ),
+            ),
+              child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 15.0),
+              child: const Center(
+                child:  Text('Send Feedback',
+                style: TextStyle(fontSize: 18.0, color: Colors.white),
+                ))),
             ),
           ],
         ),

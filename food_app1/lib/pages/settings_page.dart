@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app1/controllers/firebase_auth_service.dart';
 import 'package:food_app1/models/user_model.dart';
 import 'package:food_app1/pages/feedback_page.dart';
+import 'package:food_app1/pages/login_page.dart';
 import 'package:food_app1/pages/push_notification_page.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class SettingsPage extends StatefulWidget {
   final AppUser user;
@@ -25,6 +28,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         titleSpacing: 0.0,
         elevation: 0.0,
@@ -52,24 +56,47 @@ class _SettingsPageState extends State<SettingsPage> {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-            ListTile(
-              leading: const Icon(Icons.feedback),
-              title: const Text('Feedback'),
+            Container(
+            padding: const EdgeInsets.all(8.0),
+            color: Colors.grey[200], // Adding background color
+            child: ListTile(
+              leading: const Icon(Icons.feedback, color: Color.fromARGB(225,245, 93, 66)),
+              title: const Text(
+                'Feedback',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+              trailing: const Icon(Icons.arrow_forward), // Adding a trailing icon
               onTap: () {
                 Navigator.push(
-                  context, 
-                  MaterialPageRoute(builder: (context) => FeedbackPage(user: _updatedUser)));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => FeedbackPage(user: _updatedUser),
+                  ),
+                );
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.notifications),
-              title: const Text('Notifications'),
+          ),
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.all(8.0),
+            color: Colors.grey[200],
+            child: ListTile(
+              leading: const Icon(Icons.notifications, color: Color.fromARGB(225,245, 93, 66)),
+              title: const Text('Notifications', style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),),
+              trailing: const Icon(Icons.arrow_forward),
               onTap: () {
                 Navigator.push(
                   context, 
                   MaterialPageRoute(builder: (context) =>  PushNotificationPage(user: _updatedUser)));
               },
             ),
+          ),
             // Add more general settings as needed
 
             const SizedBox(height: 40),
@@ -79,15 +106,30 @@ class _SettingsPageState extends State<SettingsPage> {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Logout'),
-              onTap: () {
-                // Add logic to handle logout
-                // For example, show a confirmation dialog and then sign out the user
+
+            Container(
+            padding: const EdgeInsets.all(8.0),
+            color: Colors.grey[200],
+            child: ListTile(
+              leading: const Icon(Icons.logout, color: Color.fromARGB(225,245, 93, 66)),
+              title: const Text('Logout', style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),),
+              trailing: const Icon(Icons.arrow_forward),
+              onTap: () => {
+                GoogleSignIn().signOut(),
+                FirebaseAuth.instance.signOut().then((value) {
+                  print("Signed Out");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                  );
+                }),
               },
             ),
-            // Add more account settings as needed
+          ),
+           // Add more account settings as needed
           ],
         ),
       ),
