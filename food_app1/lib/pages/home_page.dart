@@ -342,11 +342,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 _AddToCart(filteredData[i], _updatedUser.uid);
                               },
                               child: Container(
-                                width: 400,
                                 margin: const EdgeInsets.all(10),
                                 padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
                                 decoration: BoxDecoration(
-                                  //color: const Color.fromARGB(255, 21, 180, 26),
                                   color: const Color.fromARGB(225,245, 93, 66),
                                   borderRadius: BorderRadius.circular(12.0),
                                   boxShadow: [

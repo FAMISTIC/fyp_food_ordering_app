@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -64,7 +66,7 @@ class _RecommendPageState extends State<RecommendPage> {
   void _viewAllImages() async {
   final selectedImageUrl = await Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => ImageListScreen()),
+    MaterialPageRoute(builder: (context) => const ImageListScreen()),
   );
   if (selectedImageUrl != null) {
     setState(() {
@@ -77,7 +79,7 @@ class _RecommendPageState extends State<RecommendPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Image Upload Demo'),
+        title: const Text('Reommend Food'),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -102,7 +104,7 @@ class _RecommendPageState extends State<RecommendPage> {
               const SizedBox(height: 10),
               TextField(
                 controller: _imageNameController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Image Name',
                   hintText: 'Enter the name of the image',
                 ),
@@ -116,9 +118,9 @@ class _RecommendPageState extends State<RecommendPage> {
                 onPressed: _viewAllImages,
                 child: const Text('View All Images'),
               ),
-              _imageUrl != null
+              /*_imageUrl != null
                   ? Image.network(_imageUrl!, height: 300)
-                  : const SizedBox.shrink(),
+                  : const SizedBox.shrink(),*/
             ],
           ),
         ),
@@ -146,42 +148,20 @@ class ImageListScreen extends StatelessWidget {
             children: snapshot.data!.docs.map((document) {
               String imageUrl = document['imageUrl'];
               String imageName = document['imageName'];
+              String documentId = document.id;
+
               return ListTile(
                 title: Image.network(imageUrl),
-                subtitle: Text('$imageName'),
+                subtitle: Text(imageName),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () {
+                    _showDeleteDialog(context, documentId);
+                  },
+                ),
                 onTap: () {
-                  String documentId = document.id;
-                  CollectionReference recommendCollection = FirebaseFirestore.instance.collection('recommend');
-                  
-                  // Start a batched write
-                  WriteBatch batch = FirebaseFirestore.instance.batch();
-
-                  // Update all documents to set 'status' to 'removed' except the selected one
-                  recommendCollection.get().then((querySnapshot) {
-                    querySnapshot.docs.forEach((doc) {
-                      if (doc.id != documentId) {
-                        batch.update(doc.reference, {'status': 'removed'});
-                      }
-                    });
-
-                    // Commit the batched write
-                    batch.commit().then((_) {
-                      // Update the selected document
-                      recommendCollection.doc(documentId).update({'status': 'selected'}).then((_) {
-                        // Optionally, you can also navigate back after updating the document
-                        Navigator.pop(context, imageUrl);
-                      }).catchError((error) {
-                        print('Error updating document: $error');
-                        // Handle error accordingly
-                      });
-                    }).catchError((error) {
-                      print('Error updating documents: $error');
-                      // Handle error accordingly
-                    });
-                  }).catchError((error) {
-                    print('Error getting documents: $error');
-                    // Handle error accordingly
-                  });
+                  // The onTap code to update 'status' as before
+                  _updateSelectedDocument(context, documentId);
                 },
               );
             }).toList(),
@@ -190,4 +170,103 @@ class ImageListScreen extends StatelessWidget {
       ),
     );
   }
+
+  void _showDeleteDialog(BuildContext context, String documentId) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Delete Image"),
+          content: const Text("Are you sure you want to delete this image?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Dismiss the dialog
+              },
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                _deleteDocument(context, documentId);
+                Navigator.pop(context); // Dismiss the dialog after deleting
+              },
+              child: const Text("Delete"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _deleteDocument(BuildContext context, String documentId) {
+    FirebaseFirestore.instance
+        .collection('recommend')
+        .doc(documentId)
+        .delete()
+        .catchError((error) {
+          print("Error deleting document: $error");
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Failed to delete image."),
+            ),
+          );
+        });
+  }
+
+void _updateSelectedDocument(BuildContext context, String documentId) {
+  // Show confirmation dialog
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text("Select Image"),
+        content: const Text("Are you sure you want to select this image?"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Cancel, do nothing
+            },
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Close the dialog
+              
+              // Start a batched write
+              WriteBatch batch = FirebaseFirestore.instance.batch();
+
+              CollectionReference recommendCollection =
+                  FirebaseFirestore.instance.collection('recommend');
+
+              recommendCollection.get().then((querySnapshot) {
+                querySnapshot.docs.forEach((doc) {
+                  if (doc.id != documentId) {
+                    batch.update(doc.reference, {'status': 'removed'});
+                  }
+                });
+
+                batch.commit().then((_) {
+                  recommendCollection
+                      .doc(documentId)
+                      .update({'status': 'selected'})
+                      .then((_) {
+                        Navigator.pop(context); // Navigate back after updating
+                      })
+                      .catchError((error) {
+                        print("Error updating document: $error");
+                      });
+                }).catchError((error) {
+                  print("Error committing batch: $error");
+                });
+              }).catchError((error) {
+                print("Error getting documents: $error");
+              });
+            },
+            child: const Text("Confirm"),
+          ),
+        ],
+      );
+    },
+  );
+}
 }
