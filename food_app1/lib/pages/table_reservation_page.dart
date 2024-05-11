@@ -98,7 +98,7 @@ class _TableReservationPageState extends State<TableReservationPage> {
                 onTap: () => _selectTime(context),
                 decoration:  InputDecoration(
                   labelText: 'Time',
-                  suffixIcon: Icon(Icons.access_time),
+                  suffixIcon: const Icon(Icons.access_time),
                   border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8), // For rounded corners
                   borderSide: const BorderSide(

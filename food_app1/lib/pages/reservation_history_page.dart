@@ -84,16 +84,42 @@ class _ReservationHistoryPageState extends State<ReservationHistoryPage> {
                   child: ListTile(
                     title: Text('Date: $formattedDate'),
                     subtitle: Text('Time: $formattedTime'),
-                    trailing: Text('Status: ${data['status']}'),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('Status: ${data['status']}'),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () {
+                            _deleteReservation(document.id);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 );
               }).toList(),
             );
-
         },
       ),
     );
   }
+
+  Future<void> _deleteReservation(String documentId) async {
+  try {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(_updatedUser.uid)
+        .collection('table_reservation')
+        .doc(documentId)
+        .delete();
+    // Optionally, you can refresh the UI after deletion
+    _fetchUserDetails();
+  } catch (e) {
+    print("Error deleting reservation: $e");
+    // Handle error if needed
+  }
+}
 
   Future<void> _fetchUserDetails() async {
     AppUser? userDetails =

@@ -6,7 +6,6 @@ import 'package:food_app1/controllers/firebase_options.dart';
 import 'package:food_app1/pages/landing_page.dart';
 import 'package:food_app1/pages/push_notification_page.dart';
 import 'package:provider/provider.dart';
-import 'pages/login_page.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 
 
