@@ -108,7 +108,10 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('Push Notification Button'),
+        title: const Center(child: Padding(
+          padding: EdgeInsets.only(right: 55),
+          child: Text('Push Notification'),
+        )),
         titleSpacing: 0.0,
         elevation: 0.0,
         backgroundColor: const Color.fromARGB(225,245, 93, 66),
@@ -121,44 +124,61 @@ class _PushNotificationPageState extends State<PushNotificationPage> {
                   ),
                 ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                if (pushNotificationState.pushNotificationEnabled) {
-                  // sendPushMessage();
-                    _firebaseMessaging.getToken().then((String? token) {
-                    if (token != null) {
-                      FirebaseFirestore.instance.collection('users').doc(_updatedUser.uid).set({
-                        'fcmToken': token, // Store the FCM token
-                      }, SetOptions(merge: true))
-                      .then((value) => print("Token Added"))
-                      .catchError((error) => print("Failed to add token: $error"));
-                    } else {
-                      print("Failed to retrieve FCM token.");
-                    }
-                  });
-                  _notificationManager.triggerNotification();
-                }
-              },
-              child: const Text('Send Push Notification'),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('Push Notifications:'),
-                Switch(
-                  value: pushNotificationState.pushNotificationEnabled,
-                  onChanged: (value) {
-                    pushNotificationState.setPushNotificationEnabled(value);
-                  },
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  if (pushNotificationState.pushNotificationEnabled) {
+                    // sendPushMessage();
+                      _firebaseMessaging.getToken().then((String? token) {
+                      if (token != null) {
+                        FirebaseFirestore.instance.collection('users').doc(_updatedUser.uid).set({
+                          'fcmToken': token, // Store the FCM token
+                        }, SetOptions(merge: true))
+                        .then((value) => print("Token Added"))
+                        .catchError((error) => print("Failed to add token: $error"));
+                      } else {
+                        print("Failed to retrieve FCM token.");
+                      }
+                    });
+                    _notificationManager.triggerNotification();
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                primary: const Color.fromARGB(225,245, 93, 66),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50.0),
                 ),
-              ],
-            ),
-          ],
+              ),
+                child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 15.0),
+                child: const Center(
+                  child:  Text('Test Notificatiion',
+                  style: TextStyle(fontSize: 18.0, color: Colors.white),
+                  ))),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Push Notifications:'),
+                  Switch(
+                    activeColor: const Color.fromARGB(225,245, 93, 66),
+                    value: pushNotificationState.pushNotificationEnabled,
+                    onChanged: (value) {
+                      pushNotificationState.setPushNotificationEnabled(value);
+                    },
+                  ),
+                ],
+              ),
+              const Text('Information: It will display "Order Sent"'),
+            ],
+          ),
         ),
       ),
     );

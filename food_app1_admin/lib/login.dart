@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:food_app1_admin/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,7 +19,21 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Admin Login'),
+        title: const Center(child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Center(child: Text('DJU CAFE Admin')),
+        )),
+        titleSpacing: 0.0,
+        elevation: 0.0,
+        backgroundColor: const Color.fromARGB(255, 19, 3, 245),
+        shadowColor: Colors.grey,
+        foregroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(25),
+                    bottomLeft: Radius.circular(25),
+                  ),
+                ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -26,16 +42,72 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(
+                labelText: 'Email', 
+                hintText: 'email@gmail.com',
+                filled: true,
+                fillColor: Colors.white,
+                prefixIcon: const Icon(Icons.email, color: Color.fromARGB(255, 19, 3, 245),),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8), // For rounded corners
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(225, 245, 93, 66), // Default border color
+                    width: 1, // Border width
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(223, 35, 47, 202), // Border color when the field is not focused
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(255, 19, 3, 245), // Border color when the field is focused
+                    width: 2, // Border width when focused
+                  ),
+                ),
+              ),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _passwordController,
               obscureText: true,
-              decoration: const InputDecoration(labelText: 'Password'),
+              decoration:  InputDecoration(
+                labelText: 'Password',
+                hintText: '********',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8), // For rounded corners
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(255, 19, 3, 245), // Default border color
+                    width: 1, // Border width
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(255, 19, 3, 245), // Border color when the field is not focused
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(255, 19, 3, 245), // Border color when the field is focused
+                    width: 2, // Border width when focused
+                  ),
+                ),
+                prefixIcon: const Icon(Icons.lock, color: Color.fromARGB(255, 19, 3, 245),),
+              ),
             ),
             const SizedBox(height: 32),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: const Color.fromARGB(255, 19, 3, 245),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50.0),
+                ),
+              ),
               onPressed: () async {
                 // Add Firebase Authentication logic here
                 String email = _emailController.text;
@@ -62,7 +134,16 @@ class _LoginPageState extends State<LoginPage> {
                   print("Only 'superadmin@gmail.com' is allowed to log in.");
                 }
               },
-              child: const Text('Login'),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 15.0),
+                child: const Center(
+                  child: Text(
+                    'Login',
+                    style: TextStyle(fontSize: 18.0, color: Colors.white),
+                  ),
+                ),
+              ),
             ),
 
           ],

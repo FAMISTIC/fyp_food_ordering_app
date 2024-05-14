@@ -38,15 +38,23 @@ class _ReservationHistoryPageState extends State<ReservationHistoryPage> {
         shadowColor: Colors.grey,
         foregroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    bottomRight: Radius.circular(25),
-                    bottomLeft: Radius.circular(25),
-                  ),
-                ),
-        title: const Center(child: Padding(
-          padding: EdgeInsets.only(right: 55),
+          borderRadius: BorderRadius.only(
+            bottomRight: Radius.circular(25),
+            bottomLeft: Radius.circular(25),
+          ),
+        ),
+        title: const Center(
           child: Text('Table Reservation History'),
-        )),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.info),
+            onPressed: () {
+              // Show info popup here
+              _showInfoPopup(context);
+            },
+          ),
+        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -89,7 +97,7 @@ class _ReservationHistoryPageState extends State<ReservationHistoryPage> {
                       children: [
                         Text('Status: ${data['status']}'),
                         IconButton(
-                          icon: Icon(Icons.delete),
+                          icon: const Icon(Icons.delete),
                           onPressed: () {
                             _deleteReservation(document.id);
                           },
@@ -102,6 +110,26 @@ class _ReservationHistoryPageState extends State<ReservationHistoryPage> {
             );
         },
       ),
+    );
+  }
+
+  void _showInfoPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Info'),
+          content: const Text('This is the table reservation history of the user.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
     );
   }
 

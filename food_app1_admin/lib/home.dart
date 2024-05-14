@@ -23,105 +23,188 @@ class _HomePageState extends  State<HomePage>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard'),
+        title: const Center(child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Center(child: Padding(
+            padding: EdgeInsets.only(right: 55.0),
+            child: Text('Home Page'),
+          )),
+        )),
+        titleSpacing: 0.0,
+        elevation: 0.0,
+        backgroundColor: const Color.fromARGB(255, 19, 3, 245),
+        shadowColor: Colors.grey,
+        foregroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(25),
+                    bottomLeft: Radius.circular(25),
+                  ),
+                ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-          ElevatedButton.icon(
-            icon: const Icon(
-            Icons.note,
-            size: 24.0,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+              padding: const EdgeInsets.all(8.0),
+              color: Colors.grey[200], // Adding background color
+              child: ListTile(
+                leading: const Icon(Icons.note, color: Color.fromARGB(255, 19, 3, 245)),
+                title: const Text(
+                  'Food Order',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+                trailing: const Icon(Icons.arrow_forward), // Adding a trailing icon
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const OrderPage()),
+                  );
+                },
+              ),
             ),
-            label: const Text('Food Order'),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const OrderPage()),
-              );
-            },
-          ),
-          ElevatedButton.icon(
-            icon: const Icon(
-            Icons.note,
-            size: 24.0,
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              color: Colors.grey[200], // Adding background color
+              child: ListTile(
+                leading: const Icon(Icons.table_bar, color: Color.fromARGB(255, 19, 3, 245)),
+                title: const Text(
+                  'Table Reservation',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+                trailing: const Icon(Icons.arrow_forward), // Adding a trailing icon
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const TableReservationPage()),
+                  );
+                },
+              ),
             ),
-            label: const Text('Table Reservation'),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const TableReservationPage()),
-              );
-            },
-          ),
-          ElevatedButton.icon(
-            icon: const Icon(
-            Icons.person,
-            size: 24.0,
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              color: Colors.grey[200], // Adding background color
+              child: ListTile(
+                leading: const Icon(Icons.person, color: Color.fromARGB(255, 19, 3, 245)),
+                title: const Text(
+                  'User Account',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+                trailing: const Icon(Icons.arrow_forward), // Adding a trailing icon
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const UserPage()),
+                  );
+                },
+              ),
             ),
-            label: const Text('User Account'),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const UserPage()),
-              );
-            },
-          ),
-          ElevatedButton.icon(
-            icon: const Icon(
-            Icons.rate_review,
-            size: 24.0,
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              color: Colors.grey[200], // Adding background color
+              child: ListTile(
+                leading: const Icon(Icons.feedback, color: Color.fromARGB(255, 19, 3, 245)),
+                title: const Text(
+                  'Customer Feedback',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+                trailing: const Icon(Icons.arrow_forward), // Adding a trailing icon
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const FeedbackListPage()),
+                  );
+                },
+              ),
             ),
-            label: const Text('Customer Feedback'),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const FeedbackListPage()),
-              );
-            },
-          ),
-          ElevatedButton.icon(
-            icon: const Icon(
-            Icons.fastfood,
-            size: 24.0,
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              color: Colors.grey[200], // Adding background color
+              child: ListTile(
+                leading: const Icon(Icons.food_bank, color: Color.fromARGB(255, 19, 3, 245)),
+                title: const Text(
+                  'Food Availability',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+                trailing: const Icon(Icons.arrow_forward), // Adding a trailing icon
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const FoodPage()),
+                  );
+                },
+              ),
             ),
-            label: const Text('Food Availability'),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const FoodPage()),
-              );
-            },
-          ),
-          ElevatedButton.icon(
-            icon: const Icon(
-            Icons.notifications,
-            size: 24.0,
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              color: Colors.grey[200], // Adding background color
+              child: ListTile(
+                leading: const Icon(Icons.notification_important, color: Color.fromARGB(255, 19, 3, 245)),
+                title: const Text(
+                  'Notify Users Food',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+                trailing: const Icon(Icons.arrow_forward), // Adding a trailing icon
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const NotifyPage()),
+                  );
+                },
+              ),
             ),
-            label: const Text('Notify Users Food'),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const NotifyPage()),
-              );
-            },
-          ),
-          ElevatedButton.icon(
-            icon: const Icon(
-            Icons.notifications,
-            size: 24.0,
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              color: Colors.grey[200], // Adding background color
+              child: ListTile(
+                leading: const Icon(Icons.recommend, color: Color.fromARGB(255, 19, 3, 245)),
+                title: const Text(
+                  'Recommend Food',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+                trailing: const Icon(Icons.arrow_forward), // Adding a trailing icon
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const RecommendPage()),
+                  );
+                },
+              ),
             ),
-            label: const Text('Recommend Food'),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) =>  const RecommendPage()),
-              );
-            },
-          ),
-         ],
-        ),   
+            
+           ],
+          ),   
+        ),
       ),
     );
   }

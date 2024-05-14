@@ -124,22 +124,20 @@ class _TableReservationPageState extends State<TableReservationPage> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-                    if (states.contains(MaterialState.pressed)) {
-                      return Colors.white; // Color when pressed
-                    }
-                    return Colors.white; // Default color
-                  }),
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-                    if (states.contains(MaterialState.pressed)) {
-                      return const Color.fromARGB(225,245, 93, 66); // Color when pressed
-                    }
-                    return const Color.fromARGB(225,245, 93, 66); // Default color
-                  }),
+                style: ElevatedButton.styleFrom(
+                primary: const Color.fromARGB(225,245, 93, 66),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50.0),
                 ),
+              ),
                 onPressed: _submitReservation,
-                child: const Text('Make Reservation'),
+                child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 15.0),
+                child: const Center(
+                  child:  Text('Make Booking',
+                  style: TextStyle(fontSize: 18.0, color: Colors.white),
+                  ))),
               ),
             ],
           ),
