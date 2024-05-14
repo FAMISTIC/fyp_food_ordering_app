@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
         )),
         titleSpacing: 0.0,
         elevation: 0.0,
-        backgroundColor: const Color.fromARGB(255, 19, 3, 245),
+        backgroundColor: const Color.fromARGB(255, 129, 18, 18),
         shadowColor: Colors.grey,
         foregroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
                 hintText: 'email@gmail.com',
                 filled: true,
                 fillColor: Colors.white,
-                prefixIcon: const Icon(Icons.email, color: Color.fromARGB(255, 19, 3, 245),),
+                prefixIcon: const Icon(Icons.email, color: Color.fromARGB(255, 129, 18, 18),),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8), // For rounded corners
                   borderSide: const BorderSide(
@@ -58,13 +58,13 @@ class _LoginPageState extends State<LoginPage> {
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: const BorderSide(
-                    color: Color.fromARGB(223, 35, 47, 202), // Border color when the field is not focused
+                    color: Color.fromARGB(255, 129, 18, 18), // Border color when the field is not focused
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: const BorderSide(
-                    color: Color.fromARGB(255, 19, 3, 245), // Border color when the field is focused
+                    color: Color.fromARGB(255, 129, 18, 18),// Border color when the field is focused
                     width: 2, // Border width when focused
                   ),
                 ),
@@ -80,30 +80,30 @@ class _LoginPageState extends State<LoginPage> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8), // For rounded corners
                   borderSide: const BorderSide(
-                    color: Color.fromARGB(255, 19, 3, 245), // Default border color
+                    color: Color.fromARGB(255, 129, 18, 18),// Default border color
                     width: 1, // Border width
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: const BorderSide(
-                    color: Color.fromARGB(255, 19, 3, 245), // Border color when the field is not focused
+                    color: Color.fromARGB(255, 129, 18, 18), // Border color when the field is not focused
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: const BorderSide(
-                    color: Color.fromARGB(255, 19, 3, 245), // Border color when the field is focused
+                    color: Color.fromARGB(255, 129, 18, 18), // Border color when the field is focused
                     width: 2, // Border width when focused
                   ),
                 ),
-                prefixIcon: const Icon(Icons.lock, color: Color.fromARGB(255, 19, 3, 245),),
+                prefixIcon: const Icon(Icons.lock, color: Color.fromARGB(255, 129, 18, 18),),
               ),
             ),
             const SizedBox(height: 32),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: const Color.fromARGB(255, 19, 3, 245),
+                primary: const Color.fromARGB(255, 129, 18, 18),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50.0),
                 ),

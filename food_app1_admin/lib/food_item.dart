@@ -91,14 +91,23 @@ class _FoodPageState extends State<FoodPage> {
 
           return Scaffold(
             appBar: AppBar(
-              title: Text('Food Availability'.toUpperCase()),
+              title: const Center(child: Text('Food Menu')),
+              titleSpacing: 0.0,
+              elevation: 0.0,
+              backgroundColor: const Color.fromARGB(255, 129, 18, 18),
+              shadowColor: Colors.grey,
+              foregroundColor: Colors.white,
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(25),
+                    bottomLeft: Radius.circular(25),
+                  ),
+                ),
               actions: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.amber),
-                    ),
+                  child: IconButton(
+                    icon: const Icon(Icons.add),
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -107,7 +116,6 @@ class _FoodPageState extends State<FoodPage> {
                         ),
                       );
                     },
-                    child: const Text('Add'),
                   ),
                 )
               ],

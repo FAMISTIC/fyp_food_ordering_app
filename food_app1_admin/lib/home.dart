@@ -32,7 +32,7 @@ class _HomePageState extends  State<HomePage>{
         )),
         titleSpacing: 0.0,
         elevation: 0.0,
-        backgroundColor: const Color.fromARGB(255, 19, 3, 245),
+        backgroundColor: const Color.fromARGB(255, 129, 18, 18),
         shadowColor: Colors.grey,
         foregroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
@@ -52,7 +52,7 @@ class _HomePageState extends  State<HomePage>{
               padding: const EdgeInsets.all(8.0),
               color: Colors.grey[200], // Adding background color
               child: ListTile(
-                leading: const Icon(Icons.note, color: Color.fromARGB(255, 19, 3, 245)),
+                leading: const Icon(Icons.note, color: Color.fromARGB(255, 129, 18, 18),),
                 title: const Text(
                   'Food Order',
                   style: TextStyle(
@@ -74,7 +74,7 @@ class _HomePageState extends  State<HomePage>{
               padding: const EdgeInsets.all(8.0),
               color: Colors.grey[200], // Adding background color
               child: ListTile(
-                leading: const Icon(Icons.table_bar, color: Color.fromARGB(255, 19, 3, 245)),
+                leading: const Icon(Icons.table_bar, color: Color.fromARGB(255, 129, 18, 18),),
                 title: const Text(
                   'Table Reservation',
                   style: TextStyle(
@@ -96,7 +96,7 @@ class _HomePageState extends  State<HomePage>{
               padding: const EdgeInsets.all(8.0),
               color: Colors.grey[200], // Adding background color
               child: ListTile(
-                leading: const Icon(Icons.person, color: Color.fromARGB(255, 19, 3, 245)),
+                leading: const Icon(Icons.person, color: Color.fromARGB(255, 129, 18, 18),),
                 title: const Text(
                   'User Account',
                   style: TextStyle(
@@ -118,7 +118,7 @@ class _HomePageState extends  State<HomePage>{
               padding: const EdgeInsets.all(8.0),
               color: Colors.grey[200], // Adding background color
               child: ListTile(
-                leading: const Icon(Icons.feedback, color: Color.fromARGB(255, 19, 3, 245)),
+                leading: const Icon(Icons.feedback, color: Color.fromARGB(255, 129, 18, 18),),
                 title: const Text(
                   'Customer Feedback',
                   style: TextStyle(
@@ -140,9 +140,9 @@ class _HomePageState extends  State<HomePage>{
               padding: const EdgeInsets.all(8.0),
               color: Colors.grey[200], // Adding background color
               child: ListTile(
-                leading: const Icon(Icons.food_bank, color: Color.fromARGB(255, 19, 3, 245)),
+                leading: const Icon(Icons.food_bank, color: Color.fromARGB(255, 129, 18, 18),),
                 title: const Text(
-                  'Food Availability',
+                  'Food Menu',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -162,9 +162,9 @@ class _HomePageState extends  State<HomePage>{
               padding: const EdgeInsets.all(8.0),
               color: Colors.grey[200], // Adding background color
               child: ListTile(
-                leading: const Icon(Icons.notification_important, color: Color.fromARGB(255, 19, 3, 245)),
+                leading: const Icon(Icons.notification_important, color: Color.fromARGB(255, 129, 18, 18),),
                 title: const Text(
-                  'Notify Users Food',
+                  'Notify Users',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -184,7 +184,7 @@ class _HomePageState extends  State<HomePage>{
               padding: const EdgeInsets.all(8.0),
               color: Colors.grey[200], // Adding background color
               child: ListTile(
-                leading: const Icon(Icons.recommend, color: Color.fromARGB(255, 19, 3, 245)),
+                leading: const Icon(Icons.recommend, color: Color.fromARGB(255, 129, 18, 18),),
                 title: const Text(
                   'Recommend Food',
                   style: TextStyle(

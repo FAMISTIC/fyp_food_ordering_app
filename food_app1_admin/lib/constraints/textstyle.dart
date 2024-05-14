@@ -5,5 +5,5 @@ var txt = const TextStyle(
   fontWeight: FontWeight.bold,
 );
 var txt2 = const TextStyle(
-  fontSize: 18,
+  fontSize: 12,
 );

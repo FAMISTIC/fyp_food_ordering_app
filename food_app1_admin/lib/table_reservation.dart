@@ -14,8 +14,25 @@ class _TableReservationPageState extends State<TableReservationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Table Reservations'),
-      ),
+            title: const Center(child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Center(child: Padding(
+                padding: EdgeInsets.only(right: 55.0),
+                child: Text('Table Reservation'),
+              )),
+            )),
+            titleSpacing: 0.0,
+            elevation: 0.0,
+            backgroundColor: const Color.fromARGB(255, 129, 18, 18),
+            shadowColor: Colors.grey,
+            foregroundColor: Colors.white,
+            shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(25),
+                        bottomLeft: Radius.circular(25),
+                      ),
+                    ),
+          ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('users').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
