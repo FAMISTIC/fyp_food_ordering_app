@@ -98,10 +98,15 @@ class _CartPageState extends State<CartPage> {
                               double.parse(foodItem['price'].toString());
 
                           return ListTile(
-                            title: Text('${foodItem['foodName']}'),
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('${foodItem['foodName']}'),
+                                Text('RM${(foodItem['quantity'] * double.parse(foodItem['price'].toString())).toStringAsFixed(2)}', textAlign: TextAlign.right,),
+                              ],
+                            ),
                             subtitle: Text(
-                              'Quantity: ${foodItem['quantity']}   '
-                              'RM${(foodItem['quantity'] * double.parse(foodItem['price'].toString())).toStringAsFixed(2)}',
+                              '${foodItem['quantity']} x RM ${foodItem['price']}   '
                             ),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -137,6 +142,19 @@ class _CartPageState extends State<CartPage> {
                       ).toList(),
                     ),
                   ),
+                   Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: Text(
+                        'Total: \RM${totalAmount.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
@@ -165,16 +183,6 @@ class _CartPageState extends State<CartPage> {
                         }
                       },
                       hint: const Text('Select Table'),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'Overall Total: \$${totalAmount.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
                     ),
                   ),
                 ],
