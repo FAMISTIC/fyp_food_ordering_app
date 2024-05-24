@@ -90,39 +90,40 @@ class _CartPageState extends State<CartPage> {
                 children: [
                   Expanded(
                     child: ListView(
-                      children: snapshot.data!.docs.map(
-                        (DocumentSnapshot document) {
+                      children: snapshot.data!.docs.asMap().entries.map(
+                        (MapEntry<int, DocumentSnapshot> entry) {
+                          int index = entry.key;
+                          DocumentSnapshot document = entry.value;
                           Map<String, dynamic>? foodItem = document.data() as Map<String, dynamic>;
 
-                          totalAmount += foodItem['quantity'] *
-                              double.parse(foodItem['price'].toString());
+                          totalAmount += foodItem['quantity'] * double.parse(foodItem['price'].toString());
 
                           return ListTile(
                             title: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('${foodItem['foodName']}'),
+                                Text('${index + 1}. ${foodItem['foodName']}'), // Adding the index here
                                 Text('RM${(foodItem['quantity'] * double.parse(foodItem['price'].toString())).toStringAsFixed(2)}', textAlign: TextAlign.right,),
                               ],
                             ),
                             subtitle: Text(
-                              '${foodItem['quantity']} x RM ${foodItem['price']}   '
+                              '      ${foodItem['quantity']} x RM ${double.parse(foodItem['price'].toString()).toStringAsFixed(2)}  '
                             ),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
+                                  iconSize: 20,
                                   onPressed: () {
-                                    _updateQuantity(
-                                        orderId, document.id, foodItem['quantity'] + 1);
+                                    _updateQuantity(orderId, document.id, foodItem['quantity'] + 1);
                                   },
                                   icon: const Icon(Icons.add),
                                 ),
                                 IconButton(
+                                  iconSize: 20,
                                   onPressed: () {
                                     if (foodItem['quantity'] > 1) {
-                                      _updateQuantity(
-                                          orderId, document.id, foodItem['quantity'] - 1);
+                                      _updateQuantity(orderId, document.id, foodItem['quantity'] - 1);
                                     } else {
                                       _removeItem(orderId, document.id);
                                     }
@@ -130,6 +131,7 @@ class _CartPageState extends State<CartPage> {
                                   icon: const Icon(Icons.remove),
                                 ),
                                 IconButton(
+                                  iconSize: 20,
                                   onPressed: () {
                                     _removeItem(orderId, document.id);
                                   },
@@ -141,6 +143,7 @@ class _CartPageState extends State<CartPage> {
                         },
                       ).toList(),
                     ),
+
                   ),
                    Padding(
                     padding: const EdgeInsets.all(8.0),

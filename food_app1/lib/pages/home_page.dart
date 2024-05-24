@@ -599,11 +599,14 @@ Future<String> _getUserOrderId(String userId) async {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Add to Cart',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
+                  const Center(
+                    child: Text(
+                      'Add to Cart',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        color:  Color.fromARGB(224, 234, 47, 13)
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16.0),
@@ -635,6 +638,12 @@ Future<String> _getUserOrderId(String userId) async {
                   ),
                   const SizedBox(height: 16.0),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                    primary: const Color.fromARGB(225,245, 93, 66),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50.0),
+                    ),
+                  ),
                     onPressed: () async {
                       Navigator.pop(context);
 
@@ -694,7 +703,16 @@ Future<String> _getUserOrderId(String userId) async {
                           .collection('food')
                           .add(cartItem);
                     },
-                    child: const Text('Add to Cart'),
+                    child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 15.0),
+                    child: const Center(
+                      child: Text(
+                        'Add to Cart',
+                        style: TextStyle(fontSize: 18.0, color: Colors.white),
+                      ),
+                    ),
+                  ),
                   ),
                 ],
               ),

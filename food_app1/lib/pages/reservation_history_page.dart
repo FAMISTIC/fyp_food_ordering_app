@@ -1,5 +1,3 @@
-// ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:food_app1/models/user_model.dart';
@@ -34,7 +32,7 @@ class _ReservationHistoryPageState extends State<ReservationHistoryPage> {
       appBar: AppBar(
         titleSpacing: 0.0,
         elevation: 0.0,
-        backgroundColor: const Color.fromARGB(225,245, 93, 66),
+        backgroundColor: const Color.fromARGB(225, 245, 93, 66),
         shadowColor: Colors.grey,
         foregroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
@@ -81,33 +79,41 @@ class _ReservationHistoryPageState extends State<ReservationHistoryPage> {
               child: Text('No reservations found'),
             );
           }
-            return ListView(
-              children: reservationDocuments.map((DocumentSnapshot document) {
-                final data = document.data() as Map<String, dynamic>;
-                final DateTime date = data['Date'].toDate();
-                final String formattedDate = dateFormatter.format(date);
-                final String formattedTime = timeFormatter.format(date);
-                return Card(
-                  margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                  child: ListTile(
-                    title: Text('Date: $formattedDate'),
-                    subtitle: Text('Time: $formattedTime'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('Status: ${data['status']}'),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {
-                            _deleteReservation(document.id);
-                          },
-                        ),
-                      ],
-                    ),
+          return ListView(
+            children: reservationDocuments.map((DocumentSnapshot document) {
+              final data = document.data() as Map<String, dynamic>;
+              final timestamp = data['Date'] as Timestamp;
+              final formattedDate = dateFormatter.format(timestamp.toDate());
+              final formattedTime = data['Time'];
+              final tableNumber = data['Tables']; // Assuming you have table number in your document
+
+              return Card(
+                margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                child: ListTile(
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Date: $formattedDate'),
+                      Text('Time: $formattedTime'),
+                      Text('Table Number: $tableNumber'), // Display table number
+                    ],
                   ),
-                );
-              }).toList(),
-            );
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Status: ${data['status']}'),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          _deleteReservation(document.id);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+          );
         },
       ),
     );
@@ -134,20 +140,20 @@ class _ReservationHistoryPageState extends State<ReservationHistoryPage> {
   }
 
   Future<void> _deleteReservation(String documentId) async {
-  try {
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(_updatedUser.uid)
-        .collection('table_reservation')
-        .doc(documentId)
-        .delete();
-    // Optionally, you can refresh the UI after deletion
-    _fetchUserDetails();
-  } catch (e) {
-    print("Error deleting reservation: $e");
-    // Handle error if needed
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(_updatedUser.uid)
+          .collection('table_reservation')
+          .doc(documentId)
+          .delete();
+      // Optionally, you can refresh the UI after deletion
+      _fetchUserDetails();
+    } catch (e) {
+      print("Error deleting reservation: $e");
+      // Handle error if needed
+    }
   }
-}
 
   Future<void> _fetchUserDetails() async {
     AppUser? userDetails =
