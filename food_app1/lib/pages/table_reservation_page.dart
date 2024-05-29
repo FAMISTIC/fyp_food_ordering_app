@@ -189,8 +189,8 @@ class _TableReservationPageState extends State<TableReservationPage> {
 
       // Retrieve the user's reservations
       FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.user.uid)
+          //.collection('users')
+          //.doc(widget.user.uid)
           .collection('table_reservation')
           .get()
           .then((querySnapshot) {
@@ -231,6 +231,64 @@ class _TableReservationPageState extends State<TableReservationPage> {
     }
   }
 
+void _submitReservation() async {
+  if (_formKey.currentState!.validate()) {
+    if (_selectedTables.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a table')),
+      );
+      return;
+    }
+
+    String userId = widget.user.uid;
+
+    final CollectionReference tableReservationCustomerCollection =
+        FirebaseFirestore.instance.collection('users').doc(userId).collection('table_reservation');
+
+    final CollectionReference tableReservationCollection =
+        FirebaseFirestore.instance.collection('table_reservation');
+
+    // Generate a document ID
+    String reservationId = tableReservationCollection.doc().id;
+
+    final reservationData = {
+      'Date': _dateFormat.format(_selectedDate),
+      'Time': _selectedTime.format(context),
+      'status': 'pending',
+      'tables': _selectedTables,
+    };
+
+    try {
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        // Write to customer's collection with the same document ID
+        await tableReservationCustomerCollection.doc(reservationId).set(reservationData);
+
+        // Write to general collection with the same document ID
+        await tableReservationCollection.doc(reservationId).set(reservationData);
+      });
+
+      // Refresh user details and UI after successful reservation
+      await _fetchUserDetails();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Reservation successful')),
+      );
+
+      // Clear selected tables
+      setState(() {
+        _selectedTables.clear();
+      });
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to make reservation: $error')),
+      );
+    }
+  }
+}
+
+
+
+/*
   void _submitReservation() async {
     if (_formKey.currentState!.validate()) {
       if (_selectedTables.isEmpty) {
@@ -242,9 +300,14 @@ class _TableReservationPageState extends State<TableReservationPage> {
 
       String userId = widget.user.uid;
 
-      CollectionReference tableReservationCollection = FirebaseFirestore.instance
+      CollectionReference tableReservationCustomerCollection = FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
+          .collection('table_reservation');
+
+      CollectionReference tableReservationCollection = FirebaseFirestore.instance
+          //.collection('users')
+          //.doc(userId)
           .collection('table_reservation');
 
       // Lock selected tables
@@ -272,4 +335,5 @@ class _TableReservationPageState extends State<TableReservationPage> {
       });
     }
   }
+  */
 }

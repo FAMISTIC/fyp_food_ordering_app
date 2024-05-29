@@ -48,7 +48,6 @@ class _ReservationHistoryPageState extends State<ReservationHistoryPage> {
           IconButton(
             icon: const Icon(Icons.info),
             onPressed: () {
-              // Show info popup here
               _showInfoPopup(context);
             },
           ),
@@ -82,9 +81,9 @@ class _ReservationHistoryPageState extends State<ReservationHistoryPage> {
           return ListView(
             children: reservationDocuments.map((DocumentSnapshot document) {
               final data = document.data() as Map<String, dynamic>;
-              final timestamp = data['Date'] ;
+              final timestamp = data['Date'];
               final formattedTime = data['Time'];
-              final tableNumber = data['tables']; // Assuming you have table number in your document
+              final tableNumber = data['tables'];
 
               return Card(
                 margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
@@ -94,7 +93,7 @@ class _ReservationHistoryPageState extends State<ReservationHistoryPage> {
                     children: [
                       Text('Date: $timestamp'),
                       Text('Time: $formattedTime'),
-                      Text('Table: $tableNumber'), // Display table number
+                      Text('Table: $tableNumber'),
                     ],
                   ),
                   trailing: Row(
@@ -140,13 +139,21 @@ class _ReservationHistoryPageState extends State<ReservationHistoryPage> {
 
   Future<void> _deleteReservation(String documentId) async {
     try {
+      // Delete from the user's table_reservation subcollection
       await FirebaseFirestore.instance
           .collection('users')
           .doc(_updatedUser.uid)
           .collection('table_reservation')
           .doc(documentId)
           .delete();
-      // Optionally, you can refresh the UI after deletion
+
+      // Delete from the main table_reservation collection
+      await FirebaseFirestore.instance
+          .collection('table_reservation')
+          .doc(documentId)
+          .delete();
+
+      // Optionally, refresh the UI after deletion
       _fetchUserDetails();
     } catch (e) {
       print("Error deleting reservation: $e");
@@ -155,15 +162,14 @@ class _ReservationHistoryPageState extends State<ReservationHistoryPage> {
   }
 
   void _fetchUserDetails() async {
-  AppUser? userDetails = await FirebaseAuthService().getUserDetails(widget.user.uid);
+    AppUser? userDetails = await FirebaseAuthService().getUserDetails(widget.user.uid);
 
-  if (mounted) {
-    setState(() {
-      _updatedUser = userDetails ?? _updatedUser; // Update only if userDetails is not null
-    });
-  } else {
-    print("Widget is disposed, cannot call setState().");
+    if (mounted) {
+      setState(() {
+        _updatedUser = userDetails ?? _updatedUser; // Update only if userDetails is not null
+      });
+    } else {
+      print("Widget is disposed, cannot call setState().");
+    }
   }
-}
-
 }
