@@ -82,10 +82,9 @@ class _ReservationHistoryPageState extends State<ReservationHistoryPage> {
           return ListView(
             children: reservationDocuments.map((DocumentSnapshot document) {
               final data = document.data() as Map<String, dynamic>;
-              final timestamp = data['Date'] as Timestamp;
-              final formattedDate = dateFormatter.format(timestamp.toDate());
+              final timestamp = data['Date'] ;
               final formattedTime = data['Time'];
-              final tableNumber = data['Tables']; // Assuming you have table number in your document
+              final tableNumber = data['tables']; // Assuming you have table number in your document
 
               return Card(
                 margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
@@ -93,9 +92,9 @@ class _ReservationHistoryPageState extends State<ReservationHistoryPage> {
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Date: $formattedDate'),
+                      Text('Date: $timestamp'),
                       Text('Time: $formattedTime'),
-                      Text('Table Number: $tableNumber'), // Display table number
+                      Text('Table: $tableNumber'), // Display table number
                     ],
                   ),
                   trailing: Row(
@@ -155,16 +154,16 @@ class _ReservationHistoryPageState extends State<ReservationHistoryPage> {
     }
   }
 
-  Future<void> _fetchUserDetails() async {
-    AppUser? userDetails =
-        await FirebaseAuthService().getUserDetails(widget.user.uid);
+  void _fetchUserDetails() async {
+  AppUser? userDetails = await FirebaseAuthService().getUserDetails(widget.user.uid);
 
-    if (userDetails != null) {
-      setState(() {
-        _updatedUser = userDetails;
-      });
-    } else {
-      print("Error fetching user details.");
-    }
+  if (mounted) {
+    setState(() {
+      _updatedUser = userDetails ?? _updatedUser; // Update only if userDetails is not null
+    });
+  } else {
+    print("Widget is disposed, cannot call setState().");
   }
+}
+
 }

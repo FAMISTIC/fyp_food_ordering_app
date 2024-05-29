@@ -1,12 +1,9 @@
-// ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:food_app1/models/user_model.dart';
 import 'package:food_app1/controllers/firebase_auth_service.dart';
 import 'package:food_app1/pages/reservation_history_page.dart';
 import 'package:intl/intl.dart';
-
 
 class TableReservationPage extends StatefulWidget {
   final AppUser user;
@@ -19,24 +16,27 @@ class TableReservationPage extends StatefulWidget {
 
 class _TableReservationPageState extends State<TableReservationPage> {
   DateTime _selectedDate = DateTime.now();
-  TimeOfDay _selectedTime =  TimeOfDay.now();
-
-  late TextEditingController _dateController;
-  late TextEditingController _timeController;
+  TimeOfDay _selectedTime = TimeOfDay.now();
 
   final _formKey = GlobalKey<FormState>();
-  List<bool> _selectedTables = List.generate(10, (index) => false);
-  final DateFormat _dateFormat = DateFormat('dd MM yyyy');
+  final DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
+
+  // Add a list to store the selected tables
+  final List<String> _selectedTables = [];
+
+  List<String> _userReservations = [];
 
   @override
   void initState() {
     super.initState();
     _fetchUserDetails();
-
   }
 
   @override
   Widget build(BuildContext context) {
+    List<int> availableTables = List.generate(10, (index) => index + 1)
+      ..removeWhere((table) => _userReservations.contains('Table $table'));
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -79,29 +79,27 @@ class _TableReservationPageState extends State<TableReservationPage> {
                   labelText: 'Date',
                   suffixIcon: const Icon(Icons.calendar_today),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8), // For rounded corners
+                    borderRadius: BorderRadius.circular(8),
                     borderSide: const BorderSide(
-                      color: Color.fromARGB(225, 245, 93, 66), // Default border color
-                      width: 1, // Border width
+                      color: Color.fromARGB(225, 245, 93, 66),
+                      width: 1,
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: const BorderSide(
-                      color: Color.fromARGB(225, 245, 93, 66), // Border color when the field is not focused
+                      color: Color.fromARGB(225, 245, 93, 66),
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: const BorderSide(
-                      color: Color.fromARGB(224, 234, 47, 13), // Border color when the field is focused
-                      width: 2, // Border width when focused
+                      color: Color.fromARGB(224, 234, 47, 13),
+                      width: 2,
                     ),
                   ),
                 ),
-                controller: TextEditingController(
-                text: DateFormat('yyyy-MM-dd').format(_selectedDate),
-              ),
+                controller: TextEditingController(text: _dateFormat.format(_selectedDate)),
               ),
               const SizedBox(height: 20),
               TextFormField(
@@ -111,44 +109,46 @@ class _TableReservationPageState extends State<TableReservationPage> {
                   labelText: 'Time',
                   suffixIcon: const Icon(Icons.access_time),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8), // For rounded corners
+                    borderRadius: BorderRadius.circular(8),
                     borderSide: const BorderSide(
-                      color: Color.fromARGB(225, 245, 93, 66), // Default border color
-                      width: 1, // Border width
+                      color: Color.fromARGB(225, 245, 93, 66),
+                      width: 1,
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: const BorderSide(
-                      color: Color.fromARGB(225, 245, 93, 66), // Border color when the field is not focused
+                      color: Color.fromARGB(225, 245, 93, 66),
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: const BorderSide(
-                      color: Color.fromARGB(224, 234, 47, 13), // Border color when the field is focused
-                      width: 2, // Border width when focused
+                      color: Color.fromARGB(224, 234, 47, 13),
+                      width: 2,
                     ),
                   ),
                 ),
-                controller: TextEditingController(
-                text: _selectedTime.format(context),
-              ),
+                controller: TextEditingController(text: _selectedTime.format(context)),
               ),
               const SizedBox(height: 20),
               Expanded(
                 child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: _selectedTables.length,
+                  itemCount: availableTables.length,
                   itemBuilder: (context, index) {
                     return CheckboxListTile(
-                      title: Text('Table ${index + 1}'),
-                      value: _selectedTables[index],
-                      onChanged: (bool? value) {
+                      title: Text('Table ${availableTables[index]}'),
+                      value: _selectedTables.contains('Table ${availableTables[index]}'),
+                      onChanged: (value) {
                         setState(() {
-                          _selectedTables[index] = value ?? false;
+                          if (value!) {
+                            _selectedTables.add('Table ${availableTables[index]}');
+                          } else {
+                            _selectedTables.remove('Table ${availableTables[index]}');
+                          }
                         });
                       },
+                      controlAffinity: ListTileControlAffinity.leading,
                     );
                   },
                 ),
@@ -184,7 +184,22 @@ class _TableReservationPageState extends State<TableReservationPage> {
         await FirebaseAuthService().getUserDetails(widget.user.uid);
 
     if (userDetails != null) {
-      setState(() {});
+      // Clear previous reservations to avoid duplication
+      _userReservations.clear();
+
+      // Retrieve the user's reservations
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.user.uid)
+          .collection('table_reservation')
+          .get()
+          .then((querySnapshot) {
+        setState(() {
+          querySnapshot.docs.forEach((doc) {
+            _userReservations.addAll(List<String>.from(doc['tables']));
+          });
+        });
+      });
     } else {
       print("Error fetching user details.");
     }
@@ -216,43 +231,41 @@ class _TableReservationPageState extends State<TableReservationPage> {
     }
   }
 
-  void _submitReservation() {
+  void _submitReservation() async {
     if (_formKey.currentState!.validate()) {
-      // Handle reservation logic here
-      String userId = widget.user.uid;
-      List<int> selectedTables = [];
-      for (int i = 0; i < _selectedTables.length; i++) {
-        if (_selectedTables[i]) {
-          selectedTables.add(i + 1);
-        }
-      }
-
-      if (selectedTables.isEmpty) {
+      if (_selectedTables.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select at least one table')),
+          const SnackBar(content: Text('Please select a table')),
         );
         return;
       }
 
-      // Create a reference to the 'table_reservation' collection
+      String userId = widget.user.uid;
+
       CollectionReference tableReservationCollection = FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
           .collection('table_reservation');
 
-      // Add a new document with a generated ID
+      // Lock selected tables
       tableReservationCollection.add({
-        'Date': Timestamp.fromDate(_selectedDate),
+        'Date': _dateFormat.format(_selectedDate),
         'Time': _selectedTime.format(context),
-        'Tables': selectedTables,
-        'status': 'pending', // Set initial status
+        'status': 'pending',
+        'tables': _selectedTables, // Add the selected tables to the reservation data
       }).then((value) {
-        // Reservation successful
+        // Refresh user details and UI after successful reservation
+        _fetchUserDetails();
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Reservation successful')),
         );
+
+        // Clear selected tables
+        setState(() {
+          _selectedTables.clear();
+        });
       }).catchError((error) {
-        // Error handling
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to make reservation: $error')),
         );
