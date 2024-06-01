@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:food_app1/models/user_model.dart';
@@ -205,31 +207,72 @@ class _TableReservationPageState extends State<TableReservationPage> {
     }
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    );
-    if (pickedDate != null && pickedDate != _selectedDate) {
-      setState(() {
-        _selectedDate = pickedDate;
-      });
-    }
+Future<void> _selectDate(BuildContext context) async {
+  final DateTime now = DateTime.now();
+  final DateTime tomorrow = now.add(const Duration(days: 1));
+
+  final DateTime? pickedDate = await showDatePicker(
+    context: context,
+    initialDate: _selectedDate,
+    firstDate: now,
+    lastDate: tomorrow,
+  );
+
+  if (pickedDate != null && pickedDate != _selectedDate) {
+    setState(() {
+      _selectedDate = pickedDate;
+    });
   }
+}
+
 
   Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: _selectedTime,
-    );
-    if (pickedTime != null && pickedTime != _selectedTime) {
-      setState(() {
-        _selectedTime = pickedTime;
-      });
-    }
+  final now = DateTime.now();
+  TimeOfDay initialTime = _selectedTime;
+
+  // Adjust initial time to the next hour if the current time is past 8 PM or before 8 AM
+  if (now.hour >= 20) {
+    initialTime = const TimeOfDay(hour: 9, minute: 0);
+  } else if (now.hour < 8) {
+    initialTime = const TimeOfDay(hour: 9, minute: 0);
+  } else {
+    initialTime = TimeOfDay(hour: now.hour + 1, minute: now.minute);
   }
+
+  final TimeOfDay? pickedTime = await showTimePicker(
+    context: context,
+    initialTime: initialTime,
+  );
+
+  if (pickedTime != null) {
+    final pickedDateTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      pickedTime.hour,
+      pickedTime.minute,
+    );
+
+    if (pickedDateTime.isBefore(now.add(const Duration(hours: 1)))) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a time at least 1 hour later from now.')),
+      );
+      return;
+    }
+
+    if (pickedTime.hour < 9 || pickedTime.hour >= 21) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a time between 9:00 AM and 9:00 PM.')),
+      );
+      return;
+    }
+
+    setState(() {
+      _selectedTime = pickedTime;
+    });
+  }
+  }
+
 
 void _submitReservation() async {
   if (_formKey.currentState!.validate()) {

@@ -105,10 +105,7 @@ class _RecommendPageState extends State<RecommendPage> {
             children: <Widget>[
               _imageFile.path.isNotEmpty
                   ? Image.file(_imageFile, height: 300)
-                  : const Placeholder(
-                      fallbackHeight: 200,
-                      fallbackWidth: 200,
-                    ),
+                  : const Icon(Icons.camera, size: 200, color: Color.fromARGB(255, 129, 18, 18),),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () => _pickImage(ImageSource.gallery),

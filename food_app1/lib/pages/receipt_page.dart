@@ -261,44 +261,72 @@ class _ReceiptPageState extends State<ReceiptPage> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                                                    const SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                          primary: const Color.fromARGB(225,245, 93, 66),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50.0),
+                            primary: const Color.fromARGB(225, 245, 93, 66),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
                           ),
-                        ),
                           onPressed: () async {
                             sendPushMessage();
                             if (pushNotificationState.pushNotificationEnabled) {
-                              // sendPushMessage();
                               _notificationManager.triggerNotification();
                             }
-                                                  
+
                             String newOrderId = await _createNewOrder(widget.userId);
 
-                            // Create a temporary AppUser instance with only userId
-                            AppUser temporaryUser = AppUser(uid: widget.userId, email: "", name: "", phone: "", imageLink: "");
+                            // Show confirmation dialog
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Order Confirmed'),
+                                  content: const Text('Your order has been successfully created.'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: const Text('OK'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
 
-                            // Navigate to the HomePage with the temporary AppUser instance
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HomePage(
-                                  user: temporaryUser
-                                ),
-                              ),
+                                        // Create a temporary AppUser instance with only userId
+                                        AppUser temporaryUser = AppUser(
+                                          uid: widget.userId, 
+                                          email: "", 
+                                          name: "", 
+                                          phone: "", 
+                                          imageLink: ""
+                                        );
+
+                                        // Navigate to the HomePage with the temporary AppUser instance
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => HomePage(
+                                              user: temporaryUser
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
                             );
                           },
-                          child:  Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(vertical: 15.0),
-                              child: const Center(
-                                child:  Text('Confirm Order',
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(vertical: 15.0),
+                            child: const Center(
+                              child: Text(
+                                'Confirm Order',
                                 style: TextStyle(fontSize: 18.0, color: Colors.white),
-                                ))),
-                        ),
+                              ),
+                            ),
+                          ),
+                        )
+
 
                           ],
                         ),

@@ -107,14 +107,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
             const Text('Registration', style: TextStyle(fontSize: 40, fontWeight: FontWeight.w700, color:  Color.fromARGB(224, 234, 47, 13))),
             const SizedBox(height: 40),
             reusableTextField(
-                  "Enter Email Id",
+                  "Enter Email",
                   Icons.person_outline,
                   false,
                   _emailController,
                 ),
             const SizedBox(height: 16.0),
             reusableTextField(
-                  "Enter Password",
+                  "Enter Password (min: 6 characters)",
                   Icons.lock,
                   true,
                   _passwordController,

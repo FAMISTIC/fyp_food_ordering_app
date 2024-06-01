@@ -1,136 +1,150 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 
 class TableReservationPage extends StatefulWidget {
-  const TableReservationPage({Key? key}) : super(key: key);
+  const TableReservationPage({super.key});
 
   @override
-  State<TableReservationPage> createState() => _TableReservationPageState();
+  _TableReservationPageState createState() => _TableReservationPageState();
 }
 
 class _TableReservationPageState extends State<TableReservationPage> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<List<Map<String, dynamic>>> _fetchUsersWithReservations() async {
+    List<Map<String, dynamic>> userList = [];
+    QuerySnapshot usersSnapshot = await _firestore.collection('users').get();
+
+    for (var userDoc in usersSnapshot.docs) {
+      var userData = userDoc.data() as Map<String, dynamic>;
+      userData['id'] = userDoc.id;  // Store the user ID
+      var reservationsSnapshot = await userDoc.reference.collection('table_reservation').get();
+
+      userData['reservations'] = reservationsSnapshot.docs.map((doc) {
+        var reservationData = doc.data() as Map<String, dynamic>;
+        reservationData['id'] = doc.id;  // Store the reservation ID
+        return reservationData;
+      }).toList();
+      userList.add(userData);
+    }
+
+    return userList;
+  }
+
+  Future<void> _updateReservationStatus(String userId, String reservationId, String newStatus) async {
+    if (userId == null || reservationId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error: User ID or Reservation ID is null')),
+      );
+      return;
+    }
+    try {
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('table_reservation')
+          .doc(reservationId)
+          .update({'status': newStatus});
+      setState(() {}); // Refresh the UI
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update status: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-            title: const Center(child: Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Center(child: Padding(
-                padding: EdgeInsets.only(right: 55.0),
-                child: Text('Table Reservation'),
-              )),
-            )),
-            titleSpacing: 0.0,
-            elevation: 0.0,
-            backgroundColor: const Color.fromARGB(255, 129, 18, 18),
-            shadowColor: Colors.grey,
-            foregroundColor: Colors.white,
-            shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        bottomRight: Radius.circular(25),
-                        bottomLeft: Radius.circular(25),
-                      ),
-                    ),
-          ),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('users').snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+        title: const Center(child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Center(child: Padding(
+            padding: EdgeInsets.only(right: 55.0),
+            child: Text('Table Reservation'),
+          )),
+        )),
+        titleSpacing: 0.0,
+        elevation: 0.0,
+        backgroundColor: const Color.fromARGB(255, 129, 18, 18),
+        shadowColor: Colors.grey,
+        foregroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(25),
+                    bottomLeft: Radius.circular(25),
+                  ),
+                ),
+      ),
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: _fetchUsersWithReservations(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No users found.'));
+          } else {
+            List<Map<String, dynamic>> users = snapshot.data!;
 
-          final users = snapshot.data!.docs;
+            return ListView.builder(
+              itemCount: users.length,
+              itemBuilder: (context, index) {
+                var user = users[index];
+                var userId = user['id']; // Assuming 'id' is the user document ID
+                var reservations = user['reservations'] as List<Map<String, dynamic>>;
 
-          return ListView.builder(
-            itemCount: users.length,
-            itemBuilder: (BuildContext context, int index) {
-              final user = users[index];
-              // Check if user's name is "admin", if yes, skip rendering
-              if (user['name'] == "admin") {
+                if (user['name'] == "admin") {
                 return const SizedBox(); // Return an empty SizedBox to skip rendering
               }
 
-              final userReservations = user.reference.collection('table_reservation').snapshots();
+                return ExpansionTile(
+                  title: Text(user['name'] ?? 'No Name'),
+                  children: reservations.map((reservation) {
+                    var reservationId = reservation['id'];
+                    var tables = reservation['tables'] as List<dynamic>? ?? [];
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      user['name'], // Assuming 'name' is a field in your user document
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  StreamBuilder(
-                    stream: userReservations,
-                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (!snapshot.hasData) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                      final reservations = snapshot.data!.docs;
-                      return Column(
-                        children: reservations.map((reservation) {
-                          final date = reservation['Date'] != null
-                              ? DateFormat('yyyy-MM-dd').format((reservation['Date'] as Timestamp).toDate())
-                              : 'Not Available';
-                          final time = reservation['Time'] != null ? reservation['Time'].toString() : 'Not Available';
-                          final status = reservation['status'] ?? 'Not Available';
-
-                          return Container(
-                            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Date: $date'),
-                                Text('Time: $time'),
-                                Text('Status: $status'),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        _updateStatus(reservation.reference, 'accepted');
-                                      },
-                                      child: const Text('Accept'),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        _updateStatus(reservation.reference, 'rejected');
-                                      },
-                                      child: const Text('Reject'),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                      );
-                    },
-                  ),
-                ],
-              );
-            },
-
-          );
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Date: ${reservation['Date']}'),
+                          Text('Time: ${reservation['Time']} - Status: ${reservation['status']}'),
+                          Text('Tables: ${tables.isNotEmpty ? tables.join(', ') : 'No tables'}'),
+                          const SizedBox(height: 8.0),
+                          Row(
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  _updateReservationStatus(userId, reservationId, 'accepted');
+                                },
+                                style: ElevatedButton.styleFrom(primary: Colors.green),
+                                child: const Text('Accepted'),
+                              ),
+                              const SizedBox(width: 8.0),
+                              ElevatedButton(
+                                onPressed: () {
+                                  _updateReservationStatus(userId, reservationId, 'declined');
+                                },
+                                style: ElevatedButton.styleFrom(primary: Colors.red),
+                                child: const Text('Declined'),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                );
+              },
+            );
+          }
         },
       ),
     );
-  }
-
-  Future<void> _updateStatus(DocumentReference reservationRef, String newStatus) async {
-    await reservationRef.update({'status': newStatus});
   }
 }
