@@ -1,7 +1,8 @@
-// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:flutter/foundation.dart';
 
 class TableReservationPage extends StatefulWidget {
   const TableReservationPage({super.key});
@@ -22,12 +23,14 @@ class _TableReservationPageState extends State<TableReservationPage> {
       userData['id'] = userDoc.id;  // Store the user ID
       var reservationsSnapshot = await userDoc.reference.collection('table_reservation').get();
 
-      userData['reservations'] = reservationsSnapshot.docs.map((doc) {
-        var reservationData = doc.data() as Map<String, dynamic>;
-        reservationData['id'] = doc.id;  // Store the reservation ID
-        return reservationData;
-      }).toList();
-      userList.add(userData);
+      if (reservationsSnapshot.docs.isNotEmpty) {  // Check if the user has any reservations
+        userData['reservations'] = reservationsSnapshot.docs.map((doc) {
+          var reservationData = doc.data() as Map<String, dynamic>;
+          reservationData['id'] = doc.id;  // Store the reservation ID
+          return reservationData;
+        }).toList();
+        userList.add(userData);
+      }
     }
 
     return userList;
@@ -69,10 +72,6 @@ class _TableReservationPageState extends State<TableReservationPage> {
           .collection('table_reservation')
           .doc(reservationId)
           .delete();
-      await _firestore
-          .collection('table_reservation')
-          .doc(reservationId)
-          .delete();
       setState(() {}); // Refresh the UI
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -85,24 +84,28 @@ class _TableReservationPageState extends State<TableReservationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Center(child: Padding(
-            padding: EdgeInsets.only(right: 55.0),
-            child: Text('Table Reservation'),
-          )),
-        )),
+        title: const Center(
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.only(right: 55.0),
+                child: Text('Table Reservation'),
+              ),
+            ),
+          ),
+        ),
         titleSpacing: 0.0,
         elevation: 0.0,
         backgroundColor: const Color.fromARGB(255, 129, 18, 18),
         shadowColor: Colors.grey,
         foregroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    bottomRight: Radius.circular(25),
-                    bottomLeft: Radius.circular(25),
-                  ),
-                ),
+          borderRadius: BorderRadius.only(
+            bottomRight: Radius.circular(25),
+            bottomLeft: Radius.circular(25),
+          ),
+        ),
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _fetchUsersWithReservations(),
@@ -123,10 +126,6 @@ class _TableReservationPageState extends State<TableReservationPage> {
                 var userId = user['id']; // Assuming 'id' is the user document ID
                 var reservations = user['reservations'] as List<Map<String, dynamic>>;
 
-                if (user['name'] == "admin") {
-                  return const SizedBox(); // Return an empty SizedBox to skip rendering
-                }
-
                 return ExpansionTile(
                   title: Text(user['name'] ?? 'No Name'),
                   children: reservations.map((reservation) {
@@ -145,16 +144,78 @@ class _TableReservationPageState extends State<TableReservationPage> {
                           Row(
                             children: [
                               ElevatedButton(
-                                onPressed: () {
+                                onPressed: () async{
                                   _updateReservationStatus(userId, reservationId, 'accepted');
+                                  try {
+                                            await http.post(
+                                              Uri.parse('https://fcm.googleapis.com/fcm/send'),
+                                              headers: <String, String>{
+                                                'Content-Type': 'application/json',
+                                                'Authorization':
+                                                    'key=AAAAfstLWrA:APA91bGlTPTuyr5GLBRnz7xH2ZqxrG0QEI_SXXnwgxGBFADCpEOujreIuBk7Lcv3wzlqlgf8vdUzMX__rhgsj3H5Mc_eUPi0l9VuMBycdfzihxTXIeErNKQZ0lbbQ2bBKZ5UYFcYKUPO',
+                                              },
+                                              body: jsonEncode(
+                                                <String, dynamic>{
+                                                  'priority': 'high',
+                                                  'data': <String, dynamic>{
+                                                    'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+                                                    'status': 'done',
+                                                    'title': 'DJU CAFE',
+                                                    'body': '${user['name']} \nAccepted', // Concatenate additional text after the body
+                                                  },
+                                                  "notification": <String, dynamic>{
+                                                    'title': 'DJU CAFE',
+                                                    'body': '${user['name']} \nAccepted \n${reservation['Date']} \nTime: ${reservation['Time']}\nTables: ${tables.isNotEmpty ? tables.join(', ') : 'No tables'}', // Concatenate additional text after the body
+                                                  },
+                                                  'to': user['fcmToken'].toString(),
+                                                },
+
+                                              ),
+                                            );
+                                          } catch (e) {
+                                            if (kDebugMode) {
+                                              print("error push notification");
+                                            }
+                                    }
                                 },
                                 style: ElevatedButton.styleFrom(primary: Colors.green),
                                 child: const Text('Accept'),
                               ),
                               const SizedBox(width: 8.0),
                               ElevatedButton(
-                                onPressed: () {
+                                onPressed: () async{
                                   _updateReservationStatus(userId, reservationId, 'declined');
+                                  try {
+                                            await http.post(
+                                              Uri.parse('https://fcm.googleapis.com/fcm/send'),
+                                              headers: <String, String>{
+                                                'Content-Type': 'application/json',
+                                                'Authorization':
+                                                    'key=AAAAfstLWrA:APA91bGlTPTuyr5GLBRnz7xH2ZqxrG0QEI_SXXnwgxGBFADCpEOujreIuBk7Lcv3wzlqlgf8vdUzMX__rhgsj3H5Mc_eUPi0l9VuMBycdfzihxTXIeErNKQZ0lbbQ2bBKZ5UYFcYKUPO',
+                                              },
+                                              body: jsonEncode(
+                                                <String, dynamic>{
+                                                  'priority': 'high',
+                                                  'data': <String, dynamic>{
+                                                    'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+                                                    'status': 'done',
+                                                    'title': 'DJU CAFE',
+                                                    'body': '${user['name']} \nDeclined', // Concatenate additional text after the body
+                                                  },
+                                                  "notification": <String, dynamic>{
+                                                    'title': 'DJU CAFE',
+                                                    'body': '${user['name']} \nDeclined \n${reservation['Date']} \nTime: ${reservation['Time']}\nTables: ${tables.isNotEmpty ? tables.join(', ') : 'No tables'}', // Concatenate additional text after the body
+                                                  },
+                                                  'to': user['fcmToken'].toString(),
+                                                },
+
+                                              ),
+                                            );
+                                          } catch (e) {
+                                            if (kDebugMode) {
+                                              print("error push notification");
+                                            }
+                                    }
                                 },
                                 style: ElevatedButton.styleFrom(primary: Colors.red),
                                 child: const Text('Decline'),

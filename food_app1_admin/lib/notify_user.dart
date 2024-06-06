@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,7 +16,6 @@ class NotifyPage extends StatefulWidget {
 
 class _NotifyPageState extends State<NotifyPage> {
 
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   late AppUser user;
 
@@ -136,17 +134,6 @@ class _NotifyPageState extends State<NotifyPage> {
                                   ),
                                 ),
                               ),
-                             /* TableCell(
-                                child: Container(
-                                  color: Colors.greenAccent,
-                                  child: Center(
-                                    child: Text(
-                                      'FCM Token',
-                                      style: txt,
-                                    ),
-                                  ),
-                                ),
-                              ),*/
                               TableCell(
                                 child: Container(
                                   color: Colors.greenAccent,
@@ -173,16 +160,6 @@ class _NotifyPageState extends State<NotifyPage> {
                                     ),
                                   ),
                                 ),
-                            /*    TableCell(
-                                  child: SizedBox(
-                                    child: Center(
-                                      child: Text(
-                                        filteredData[i]['fcmToken'].toString(),
-                                        style: txt2,
-                                      ),
-                                    ),
-                                  ),
-                                ), */
                                 TableCell(
                                   child: Row(
                                     children: [

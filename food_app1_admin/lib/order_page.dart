@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 class OrderPage extends StatefulWidget {
   const OrderPage({Key? key}) : super(key: key);
 
@@ -113,15 +115,77 @@ class _OrderPageState extends State<OrderPage> {
                                         mainAxisAlignment: MainAxisAlignment.end,
                                         children: [
                                           ElevatedButton(
-                                            onPressed: () {
-                                              _updateStatus(order.reference, 'Cooking');
+                                            onPressed: () async {
+                                              //_updateStatus(order.reference, 'Cooking');
+                                              try {
+                                            await http.post(
+                                              Uri.parse('https://fcm.googleapis.com/fcm/send'),
+                                              headers: <String, String>{
+                                                'Content-Type': 'application/json',
+                                                'Authorization':
+                                                    'key=AAAAfstLWrA:APA91bGlTPTuyr5GLBRnz7xH2ZqxrG0QEI_SXXnwgxGBFADCpEOujreIuBk7Lcv3wzlqlgf8vdUzMX__rhgsj3H5Mc_eUPi0l9VuMBycdfzihxTXIeErNKQZ0lbbQ2bBKZ5UYFcYKUPO',
+                                              },
+                                              body: jsonEncode(
+                                                <String, dynamic>{
+                                                  'priority': 'high',
+                                                  'data': <String, dynamic>{
+                                                    'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+                                                    'status': 'done',
+                                                    'title': 'DJU CAFE',
+                                                    'body': '${user['name']} \nCooking', // Concatenate additional text after the body
+                                                  },
+                                                  "notification": <String, dynamic>{
+                                                    'title': 'DJU CAFE',
+                                                    'body': '${user['name']} \nCooking', // Concatenate additional text after the body
+                                                  },
+                                                  'to': user['fcmToken'].toString(),
+                                                },
+
+                                              ),
+                                            );
+                                          } catch (e) {
+                                            if (kDebugMode) {
+                                              print("error push notification");
+                                            }
+                                          }
                                             },
                                             child: const Text('Cooking'),
                                           ),
                                           const SizedBox(width: 10),
                                           ElevatedButton(
-                                            onPressed: () {
-                                              _updateStatus(order.reference, 'Preparing');
+                                            onPressed: () async {
+                                              //_updateStatus(order.reference, 'Preparing');
+                                              try {
+                                            await http.post(
+                                              Uri.parse('https://fcm.googleapis.com/fcm/send'),
+                                              headers: <String, String>{
+                                                'Content-Type': 'application/json',
+                                                'Authorization':
+                                                    'key=AAAAfstLWrA:APA91bGlTPTuyr5GLBRnz7xH2ZqxrG0QEI_SXXnwgxGBFADCpEOujreIuBk7Lcv3wzlqlgf8vdUzMX__rhgsj3H5Mc_eUPi0l9VuMBycdfzihxTXIeErNKQZ0lbbQ2bBKZ5UYFcYKUPO',
+                                              },
+                                              body: jsonEncode(
+                                                <String, dynamic>{
+                                                  'priority': 'high',
+                                                  'data': <String, dynamic>{
+                                                    'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+                                                    'status': 'done',
+                                                    'title': 'DJU CAFE',
+                                                    'body': '${user['name']} \nPreparing', // Concatenate additional text after the body
+                                                  },
+                                                  "notification": <String, dynamic>{
+                                                    'title': 'DJU CAFE',
+                                                    'body': '${user['name']} \nPreparing', // Concatenate additional text after the body
+                                                  },
+                                                  'to': user['fcmToken'].toString(),
+                                                },
+
+                                              ),
+                                            );
+                                          } catch (e) {
+                                            if (kDebugMode) {
+                                              print("error push notification");
+                                            }
+                                          }
                                             },
                                             child: const Text('Preparing'),
                                           ),
@@ -168,14 +232,14 @@ class _OrderPageState extends State<OrderPage> {
                                 );
                               }
                             },
-              );
-            }).toList(),
-          );
-        },
-      ),
-    ],
-  );
-},
+                            );
+                          }).toList(),
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },
 
           );
         },
@@ -183,13 +247,11 @@ class _OrderPageState extends State<OrderPage> {
     );
   }
 }
-
-Future<void> _updateStatus(DocumentReference reservationRef, String newStatus) async {
+/*Future<void> _updateStatus(DocumentReference reservationRef, String newStatus) async {
     await reservationRef.set({'status': newStatus}, SetOptions(merge: true))
                       .then((value) => print("Okay"))
                       .catchError((error) => print("Failed: $error"));
-  }
-
+  }*/
 String _formatDate(Timestamp? date) {
   if (date != null) {
     DateTime dateTime = date.toDate();

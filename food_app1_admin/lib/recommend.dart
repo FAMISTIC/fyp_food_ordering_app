@@ -20,7 +20,7 @@ class _RecommendPageState extends State<RecommendPage> {
   final ImagePicker _picker = ImagePicker();
   late File _imageFile = File('');
   String? _imageUrl;
-  TextEditingController _imageNameController = TextEditingController();
+  final TextEditingController _imageNameController = TextEditingController();
 
   Future<void> _pickImage(ImageSource source) async {
     final pickedFile = await _picker.pickImage(source: source);
