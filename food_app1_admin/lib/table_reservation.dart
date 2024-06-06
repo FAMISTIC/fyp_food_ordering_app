@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +55,32 @@ class _TableReservationPageState extends State<TableReservationPage> {
     }
   }
 
+  Future<void> _deleteReservation(String userId, String reservationId) async {
+    if (userId == null || reservationId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error: User ID or Reservation ID is null')),
+      );
+      return;
+    }
+    try {
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('table_reservation')
+          .doc(reservationId)
+          .delete();
+      await _firestore
+          .collection('table_reservation')
+          .doc(reservationId)
+          .delete();
+      setState(() {}); // Refresh the UI
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete reservation: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,8 +124,8 @@ class _TableReservationPageState extends State<TableReservationPage> {
                 var reservations = user['reservations'] as List<Map<String, dynamic>>;
 
                 if (user['name'] == "admin") {
-                return const SizedBox(); // Return an empty SizedBox to skip rendering
-              }
+                  return const SizedBox(); // Return an empty SizedBox to skip rendering
+                }
 
                 return ExpansionTile(
                   title: Text(user['name'] ?? 'No Name'),
@@ -123,7 +149,7 @@ class _TableReservationPageState extends State<TableReservationPage> {
                                   _updateReservationStatus(userId, reservationId, 'accepted');
                                 },
                                 style: ElevatedButton.styleFrom(primary: Colors.green),
-                                child: const Text('Accepted'),
+                                child: const Text('Accept'),
                               ),
                               const SizedBox(width: 8.0),
                               ElevatedButton(
@@ -131,7 +157,15 @@ class _TableReservationPageState extends State<TableReservationPage> {
                                   _updateReservationStatus(userId, reservationId, 'declined');
                                 },
                                 style: ElevatedButton.styleFrom(primary: Colors.red),
-                                child: const Text('Declined'),
+                                child: const Text('Decline'),
+                              ),
+                              const SizedBox(width: 8.0),
+                              ElevatedButton(
+                                onPressed: () {
+                                  _deleteReservation(userId, reservationId);
+                                },
+                                style: ElevatedButton.styleFrom(primary: Colors.grey),
+                                child: const Text('Delete'),
                               ),
                             ],
                           ),
