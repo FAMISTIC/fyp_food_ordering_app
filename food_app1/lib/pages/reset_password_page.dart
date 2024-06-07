@@ -50,7 +50,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                   height: 20,
                 ),
                 reusableTextField(
-                  "Enter Email Id",
+                  "Enter Email",
                   Icons.person_outline,
                   false,
                   _emailTextController,

@@ -158,6 +158,7 @@ class _HomePageState extends  State<HomePage>{
               ),
             ),
             const SizedBox(height: 10),
+            /*
             Container(
               padding: const EdgeInsets.all(8.0),
               color: Colors.grey[200], // Adding background color
@@ -178,7 +179,7 @@ class _HomePageState extends  State<HomePage>{
                   );
                 },
               ),
-            ),
+            ),*/
             const SizedBox(height: 10),
             Container(
               padding: const EdgeInsets.all(8.0),
