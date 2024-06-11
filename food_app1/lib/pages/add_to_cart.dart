@@ -102,8 +102,13 @@ class _CartPageState extends State<CartPage> {
                             title: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('${index + 1}. ${foodItem['foodName']}'), // Adding the index here
-                                Text('RM${(foodItem['quantity'] * double.parse(foodItem['price'].toString())).toStringAsFixed(2)}', textAlign: TextAlign.right,),
+                                Text('${index + 1}. ${foodItem['foodName']}', style: const TextStyle(fontSize: 15),), // Adding the index here
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: Text('RM${(foodItem['quantity'] * double.parse(foodItem['price'].toString())).toStringAsFixed(2)}',
+                                   textAlign: TextAlign.right, 
+                                   style: const TextStyle(fontSize: 15),),
+                                ),
                               ],
                             ),
                             subtitle: Text(
@@ -114,6 +119,7 @@ class _CartPageState extends State<CartPage> {
                               children: [
                                 IconButton(
                                   iconSize: 20,
+                                   padding: const EdgeInsets.only(left: 20),
                                   onPressed: () {
                                     _updateQuantity(orderId, document.id, foodItem['quantity'] + 1);
                                   },
@@ -132,6 +138,7 @@ class _CartPageState extends State<CartPage> {
                                 ),
                                 IconButton(
                                   iconSize: 20,
+                                  padding: const EdgeInsets.only(right: 20),
                                   onPressed: () {
                                     _removeItem(orderId, document.id);
                                   },

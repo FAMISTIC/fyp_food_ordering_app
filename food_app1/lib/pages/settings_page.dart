@@ -85,7 +85,7 @@ class _SettingsPageState extends State<SettingsPage> {
             color: Colors.grey[200],
             child: ListTile(
               leading: const Icon(Icons.notifications, color: Color.fromARGB(225,245, 93, 66)),
-              title: const Text('Notifications', style: TextStyle(
+              title: const Text('Push Notifications', style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                 ),),

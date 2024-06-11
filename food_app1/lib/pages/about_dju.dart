@@ -58,7 +58,7 @@ class AboutDjuPage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Text(
-              'Food:',
+              'Service:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             Text(

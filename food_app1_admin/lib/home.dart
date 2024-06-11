@@ -157,7 +157,6 @@ class _HomePageState extends  State<HomePage>{
                 },
               ),
             ),
-            const SizedBox(height: 10),
             /*
             Container(
               padding: const EdgeInsets.all(8.0),
@@ -187,7 +186,7 @@ class _HomePageState extends  State<HomePage>{
               child: ListTile(
                 leading: const Icon(Icons.recommend, color: Color.fromARGB(255, 129, 18, 18),),
                 title: const Text(
-                  'Recommend Food',
+                  'Food News',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,

@@ -83,7 +83,7 @@ class _RecommendPageState extends State<RecommendPage> {
           padding: EdgeInsets.all(8.0),
           child: Center(child: Padding(
             padding: EdgeInsets.only(right: 55.0),
-            child: Text('Recommend Food'),
+            child: Text('Food News'),
           )),
         )),
         titleSpacing: 0.0,

@@ -75,7 +75,7 @@ class _NavDrawerState extends State<NavDrawer> {
             ),
             ListTile(
               leading: const Icon(Icons.history, color: Colors.white,),
-              title: const Text('History', 
+              title: const Text('Order History', 
               style: TextStyle(color: Colors.white),),
               onTap: () {
                 Navigator.of(context).pop(); // Close the drawer
