@@ -24,23 +24,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
       bool phoneExists = await _checkIfPhoneExists(cleanedPhoneNumber);
       if (phoneExists) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Error'),
-              content: const Text('Phone number already exists'),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('Close'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
+        _showErrorDialog('Error', 'Phone number already exists');
+        return;
+      }
+
+      bool usernameExists = await _checkIfUsernameExists(_nameController.text);
+      if (usernameExists) {
+        _showErrorDialog('Error', 'Username already exists');
         return;
       }
 
@@ -83,6 +73,35 @@ class _RegistrationPageState extends State<RegistrationPage> {
         .get();
     final List<DocumentSnapshot> documents = result.docs;
     return documents.isNotEmpty;
+  }
+
+  Future<bool> _checkIfUsernameExists(String username) async {
+    final QuerySnapshot result = await FirebaseFirestore.instance
+        .collection('users')
+        .where('name', isEqualTo: username)
+        .get();
+    final List<DocumentSnapshot> documents = result.docs;
+    return documents.isNotEmpty;
+  }
+
+  void _showErrorDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -144,130 +163,28 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     _emailController.text.isEmpty &&
                     _passwordController.text.length < 6 &&
                     _phoneController.text.isEmpty) {
-                  print("Please insert all the fields");
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Error'),
-                        content: const Text('Please insert all the fields'),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text('Close'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                  _showErrorDialog('Error', 'Please insert all the fields');
                   return;
                 }
                 if (_nameController.text.isEmpty) {
-                  print("Username cannot be empty");
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Error'),
-                        content: const Text('Username cannot be empty'),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text('Close'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                  _showErrorDialog('Error', 'Username cannot be empty');
                   return;
                 }
                 if (_nameController.text.toLowerCase() == 'admin' ||
                     _nameController.text.toLowerCase() == 'superadmin') {
-                  print("User cannot name admin");
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Error'),
-                        content: const Text('User cannot name admin'),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text('Close'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                  _showErrorDialog('Error', 'User cannot name admin');
                   return;
                 }
                 if (!_emailController.text.contains('@')) {
-                  print("Please enter a valid email");
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Error'),
-                        content: const Text('Invalid email'),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text('Close'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                  _showErrorDialog('Error', 'Invalid email');
                   return;
                 }
                 if (_passwordController.text.isEmpty || _passwordController.text.length < 6) {
-                  print("Password must be at least 6 characters long");
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Error'),
-                        content: const Text('Invalid password'),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text('Close'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                  _showErrorDialog('Error', 'Invalid password');
                   return;
                 }
                 if (!isValidPhoneNumber(cleanedPhoneNumber)) {
-                  print("Invalid Phone Format");
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Error'),
-                        content: const Text('Invalid Phone Format'),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text('Close'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                  _showErrorDialog('Error', 'Invalid Phone Format');
                   return;
                 }
 

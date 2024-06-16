@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           builder: (BuildContext context) {
             return AlertDialog(
               contentPadding: const EdgeInsets.all(20.0), // Example: Increase content padding
-              title: const Text('Food News'),
+              title: const Text('Food Promotion'),
               content: SingleChildScrollView( // Wrap content with SingleChildScrollView if necessary
                 child: Column( // Example: Adjust content to make it bigger
                   crossAxisAlignment: CrossAxisAlignment.start,
