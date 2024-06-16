@@ -92,7 +92,7 @@ class _FeedbackListPageState extends State<FeedbackListPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text('Date: $date'),
-                                Text('Time: $feedbacknote'),
+                                Text('Feedback: $feedbacknote'),
                               ],
                             ),
                           );

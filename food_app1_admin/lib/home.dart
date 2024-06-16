@@ -186,7 +186,7 @@ class _HomePageState extends  State<HomePage>{
               child: ListTile(
                 leading: const Icon(Icons.recommend, color: Color.fromARGB(255, 129, 18, 18),),
                 title: const Text(
-                  'Food News',
+                  'Promote Food',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
