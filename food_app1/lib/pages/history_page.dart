@@ -1,5 +1,3 @@
-// ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:food_app1/controllers/firebase_auth_service.dart';
@@ -29,24 +27,28 @@ class _HistoryPageState extends State<HistoryPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Center(child: Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Center(child: Padding(
-            padding: EdgeInsets.only(right: 55),
-            child: Text('Order History'),
-          )),
-        )),
+        title: const Center(
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.only(right: 55),
+                child: Text('Order History'),
+              ),
+            ),
+          ),
+        ),
         titleSpacing: 0.0,
         elevation: 0.0,
-        backgroundColor: const Color.fromARGB(225,245, 93, 66),
+        backgroundColor: const Color.fromARGB(225, 245, 93, 66),
         shadowColor: Colors.grey,
         foregroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    bottomRight: Radius.circular(25),
-                    bottomLeft: Radius.circular(25),
-                  ),
-                ),
+          borderRadius: BorderRadius.only(
+            bottomRight: Radius.circular(25),
+            bottomLeft: Radius.circular(25),
+          ),
+        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -77,7 +79,7 @@ class _HistoryPageState extends State<HistoryPage> {
             itemBuilder: (context, index) {
               Map<String, dynamic> orderData = orders[index].data() as Map<String, dynamic>;
               String orderId = orders[index].id;
-              
+
               // Check if checkout date, table no, and total amount are all null
               if (orderData['tableNo'] == 0 &&
                   orderData['totalAmount'] == 0) {
@@ -100,6 +102,10 @@ class _HistoryPageState extends State<HistoryPage> {
                         Text('Total Amount: RM ${orderData['totalAmount']}'),
                     ],
                   ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.black),
+                    onPressed: () => _deleteOrder(orderId),
+                  ),
                 ),
               );
             },
@@ -121,7 +127,21 @@ class _HistoryPageState extends State<HistoryPage> {
       print("Error fetching user details.");
     }
   }
+
+  Future<void> _deleteOrder(String orderId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(_updatedUser.uid)
+          .collection('order')
+          .doc(orderId)
+          .delete();
+    } catch (e) {
+      print("Error deleting order: $e");
+    }
+  }
 }
+
 String _formatDate(Timestamp? date) {
   if (date != null) {
     DateTime dateTime = date.toDate();
@@ -132,4 +152,3 @@ String _formatDate(Timestamp? date) {
     return 'N/A'; // Return a default value or handle it as per your requirement
   }
 }
-
