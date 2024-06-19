@@ -49,13 +49,14 @@ class _EditFoodState extends State<EditFood> {
   CollectionReference updateFood =
       FirebaseFirestore.instance.collection('foods');
 
-  Future<void> _updateUser(id, name, description, price) {
+  Future<void> _updateUser(id, name, description, price, type) {
     return updateFood
         .doc(id)
         .update({
           'name': name,
           'description': description,
           'price': price,
+          'type' : type
         })
         .then((value) => print("Food Updated"))
         .catchError((error) => print("Failed to update food: $error"));
@@ -80,6 +81,7 @@ class _EditFoodState extends State<EditFood> {
         var name = data!['name'];
         var description = data['description'];
         var price = data['price'];
+        var type = data['type'];
 
         return Scaffold(
           appBar: AppBar(
@@ -171,6 +173,32 @@ class _EditFoodState extends State<EditFood> {
                     horizontal: 15,
                   ),
                   child: TextFormField(
+                    initialValue: type,
+                    onChanged: (value) {
+                      type = value;
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Type',
+                      labelStyle: TextStyle(fontSize: 18),
+                      errorStyle: TextStyle(color: Colors.red, fontSize: 15),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                    ),
+                    validator: (val) {
+                      if (val == null || val.isEmpty) {
+                        return 'Please Fill Type';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 18,
+                    horizontal: 15,
+                  ),
+                  child: TextFormField(
                     initialValue: price?.toString(),
                     onChanged: (value) {
                       price = value;
@@ -204,7 +232,7 @@ class _EditFoodState extends State<EditFood> {
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           setState(() {
-                            _updateUser(widget.docID, name, description, price);
+                            _updateUser(widget.docID, name, description, price, type);
                             saveFoodImage();
                             Navigator.pop(context);
                           });
