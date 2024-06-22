@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app1/controllers/firebase_auth_service.dart';
@@ -18,11 +20,46 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   late AppUser _updatedUser;
 
-   @override
+  @override
   void initState() {
     super.initState();
     _updatedUser = widget.user;
     _fetchUserDetails();
+  }
+
+  Future <void> logout()async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm Logout"),
+          content: const Text("Are you sure you want to logout?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                GoogleSignIn().signOut();
+                  FirebaseAuth.instance.signOut().then((value) {
+                    print("Signed Out");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginPage()),
+                    );
+                  });
+              },
+              child: const Text("Confirm"),
+            ),
+          ],
+        );
+      },
+    );
+    
   }
 
   @override
@@ -32,19 +69,21 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(
         titleSpacing: 0.0,
         elevation: 0.0,
-        backgroundColor: const Color.fromARGB(225,245, 93, 66),
+        backgroundColor: const Color.fromARGB(225, 245, 93, 66),
         shadowColor: Colors.grey,
         foregroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    bottomRight: Radius.circular(25),
-                    bottomLeft: Radius.circular(25),
-                  ),
-                ),
-        title: const Center(child: Padding(
-          padding: EdgeInsets.only(right: 55),
-          child: Text('Settings'),
-        )),
+          borderRadius: BorderRadius.only(
+            bottomRight: Radius.circular(25),
+            bottomLeft: Radius.circular(25),
+          ),
+        ),
+        title: const Center(
+          child: Padding(
+            padding: EdgeInsets.only(right: 55),
+            child: Text('Settings'),
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -57,79 +96,98 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             const SizedBox(height: 20),
             Container(
-            padding: const EdgeInsets.all(8.0),
-            color: Colors.grey[200], // Adding background color
-            child: ListTile(
-              leading: const Icon(Icons.feedback, color: Color.fromARGB(225,245, 93, 66)),
-              title: const Text(
-                'Feedback',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-              trailing: const Icon(Icons.arrow_forward), // Adding a trailing icon
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => FeedbackPage(user: _updatedUser),
+              padding: const EdgeInsets.all(8.0),
+              color: Colors.grey[200],
+              child: ListTile(
+                leading: const Icon(Icons.feedback,
+                    color: Color.fromARGB(225, 245, 93, 66)),
+                title: const Text(
+                  'Feedback',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
                   ),
-                );
-              },
+                ),
+                trailing: const Icon(Icons.arrow_forward),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FeedbackPage(user: _updatedUser),
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-          const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.all(8.0),
-            color: Colors.grey[200],
-            child: ListTile(
-              leading: const Icon(Icons.notifications, color: Color.fromARGB(225,245, 93, 66)),
-              title: const Text('Push Notifications', style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),),
-              trailing: const Icon(Icons.arrow_forward),
-              onTap: () {
-                Navigator.push(
-                  context, 
-                  MaterialPageRoute(builder: (context) =>  PushNotificationPage(user: _updatedUser)));
-              },
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              color: Colors.grey[200],
+              child: ListTile(
+                leading: const Icon(Icons.notifications,
+                    color: Color.fromARGB(225, 245, 93, 66)),
+                title: const Text(
+                  'Push Notifications',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+                trailing: const Icon(Icons.arrow_forward),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            PushNotificationPage(user: _updatedUser)),
+                  );
+                },
+              ),
             ),
-          ),
-            // Add more general settings as needed
-
             const SizedBox(height: 40),
-
             const Text(
               'Account Settings',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-
             Container(
-            padding: const EdgeInsets.all(8.0),
-            color: Colors.grey[200],
-            child: ListTile(
-              leading: const Icon(Icons.logout, color: Color.fromARGB(225,245, 93, 66)),
-              title: const Text('Logout', style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),),
-              trailing: const Icon(Icons.arrow_forward),
-              onTap: () => {
-                GoogleSignIn().signOut(),
-                FirebaseAuth.instance.signOut().then((value) {
-                  print("Signed Out");
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
-                  );
-                }),
-              },
+              padding: const EdgeInsets.all(8.0),
+              color: Colors.grey[200],
+              child: ListTile(
+                leading: const Icon(Icons.logout,
+                    color: Color.fromARGB(225, 245, 93, 66)),
+                title: const Text(
+                  'Logout',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+                trailing: const Icon(Icons.arrow_forward),
+                onTap: () => {
+                  logout(),
+                },
+              ),
             ),
-          ),
-           // Add more account settings as needed
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              color: Colors.grey[200],
+              child: ListTile(
+                leading: const Icon(Icons.delete,
+                    color: Color.fromARGB(225, 245, 93, 66)),
+                title: const Text(
+                  'Delete Account',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+                trailing: const Icon(Icons.arrow_forward),
+                onTap: _deleteAccount,
+              ),
+            ),
+            // Add more account settings as needed
           ],
         ),
       ),
@@ -146,6 +204,22 @@ class _SettingsPageState extends State<SettingsPage> {
       });
     } else {
       print("Error fetching user details.");
+    }
+  }
+
+  Future<void> _deleteAccount() async {
+    try {
+      await FirebaseAuth.instance.currentUser?.delete();
+      print("User account deleted");
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
+    } catch (e) {
+      print("Error deleting user account: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error deleting account: $e")),
+      );
     }
   }
 }

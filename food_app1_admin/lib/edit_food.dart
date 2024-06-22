@@ -66,14 +66,14 @@ class _EditFoodState extends State<EditFood> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Confirm Update"),
-          content: Text("Are you sure you want to update this food item?"),
+          title: const Text("Confirm Update"),
+          content: const Text("Are you sure you want to update this food item?"),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
-              child: Text("Cancel"),
+              child: const Text("Cancel"),
             ),
             TextButton(
               onPressed: () {
@@ -84,7 +84,7 @@ class _EditFoodState extends State<EditFood> {
                   Navigator.pop(context); // Close the form
                 }
               },
-              child: Text("Confirm"),
+              child: const Text("Confirm"),
             ),
           ],
         );
