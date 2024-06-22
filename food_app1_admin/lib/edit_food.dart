@@ -29,7 +29,6 @@ class _EditFoodState extends State<EditFood> {
     setState(() {
       _image = img;
     });
-    
   }
 
   void saveFoodImage() async {
@@ -60,6 +59,37 @@ class _EditFoodState extends State<EditFood> {
         })
         .then((value) => print("Food Updated"))
         .catchError((error) => print("Failed to update food: $error"));
+  }
+
+  void _showConfirmationDialog(String id, String name, String description, String price, String type) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirm Update"),
+          content: Text("Are you sure you want to update this food item?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  _updateUser(id, name, description, price, type);
+                  saveFoodImage();
+                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.pop(context); // Close the form
+                }
+              },
+              child: Text("Confirm"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -96,7 +126,7 @@ class _EditFoodState extends State<EditFood> {
                     _image != null
                         ? Container(
                             height: 200,
-                            width:400,
+                            width: 400,
                             margin: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(50),
@@ -106,7 +136,7 @@ class _EditFoodState extends State<EditFood> {
                               ),
                             ),
                           )
-                        :  Center(
+                        : Center(
                           child: IconButton(
                           onPressed: selectImage,
                           icon: const Icon(Icons.add_a_photo),
@@ -231,11 +261,7 @@ class _EditFoodState extends State<EditFood> {
                     ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          setState(() {
-                            _updateUser(widget.docID, name, description, price, type);
-                            saveFoodImage();
-                            Navigator.pop(context);
-                          });
+                          _showConfirmationDialog(widget.docID, name, description, price, type);
                         }
                       },
                       child: const Text('Update'),
