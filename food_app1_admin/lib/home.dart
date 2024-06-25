@@ -98,7 +98,7 @@ class _HomePageState extends  State<HomePage>{
               child: ListTile(
                 leading: const Icon(Icons.person, color: Color.fromARGB(255, 129, 18, 18),),
                 title: const Text(
-                  'User Account',
+                  'User Account Detail',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,

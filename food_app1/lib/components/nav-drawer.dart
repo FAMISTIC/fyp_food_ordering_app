@@ -139,20 +139,47 @@ class _NavDrawerState extends State<NavDrawer> {
               title: const Text('Logout', 
               style: TextStyle(color: Colors.white),),
               onTap: () => {
-                GoogleSignIn().signOut(),
-                FirebaseAuth.instance.signOut().then((value) {
-                  print("Signed Out");
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
-                  );
-                }),
+                  logout(),
               },
             ),
           ],
         ),
       ),
     );
+  }
+  Future <void> logout()async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm Logout"),
+          content: const Text("Are you sure you want to logout?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                GoogleSignIn().signOut();
+                  FirebaseAuth.instance.signOut().then((value) {
+                    print("Signed Out");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginPage()),
+                    );
+                  });
+              },
+              child: const Text("Confirm"),
+            ),
+          ],
+        );
+      },
+    );
+    
   }
 
   Future<void> _fetchUserDetails() async {

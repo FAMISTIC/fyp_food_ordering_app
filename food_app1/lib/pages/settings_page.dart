@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app1/controllers/firebase_auth_service.dart';
@@ -208,18 +209,52 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _deleteAccount() async {
-    try {
-      await FirebaseAuth.instance.currentUser?.delete();
-      print("User account deleted");
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginPage()),
+  // Show confirmation dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text("Confirm Delete Account"),
+        content: const Text("Are you sure you want to delete your account?"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the dialog
+            },
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () async {
+              try {
+                // Delete user account from Firebase Authentication
+                await FirebaseAuth.instance.currentUser?.delete();
+
+                // Delete user details from Firestore collection
+                await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(widget.user.uid)
+                    .delete();
+
+                print("User account and details deleted");
+                
+                // Navigate to login page after successful deletion
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                );
+              } catch (e) {
+                print("Error deleting user account: $e");
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Error deleting account: $e")),
+                );
+              }
+            },
+            child: const Text("Confirm"),
+          ),
+        ],
       );
-    } catch (e) {
-      print("Error deleting user account: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error deleting account: $e")),
-      );
-    }
-  }
+    },
+  );
+}
+
 }
