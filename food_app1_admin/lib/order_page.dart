@@ -170,7 +170,41 @@ class _OrderPageState extends State<OrderPage> {
                                           const SizedBox(width: 10),
                                           IconButton(
                                             onPressed: () async {
-                                              await _deleteOrder(order.reference);
+                                              final shouldDelete =
+                                                  await showDialog<bool>(
+                                                context: context,
+                                                builder: (context) {
+                                                  return AlertDialog(
+                                                    title: const Text(
+                                                        'Confirm Delete'),
+                                                    content: const Text(
+                                                        'Are you sure you want to delete this order?'),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop(false),
+                                                        child: const Text(
+                                                            'Cancel'),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop(true),
+                                                        child:
+                                                            const Text('Delete'),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+
+                                              if (shouldDelete ?? false) {
+                                                await _deleteOrder(
+                                                    order.reference);
+                                              }
                                             },
                                             icon: const Icon(Icons.delete),
                                             style: ElevatedButton.styleFrom(
