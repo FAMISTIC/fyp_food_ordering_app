@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,7 +18,7 @@ class TableReservationPage extends StatefulWidget {
 
 class _TableReservationPageState extends State<TableReservationPage> {
   DateTime _selectedDate = DateTime.now();
-  TimeOfDay _selectedTime = TimeOfDay.now();
+  TimeOfDay _selectedTime = const TimeOfDay(hour: 9, minute: 0);
 
   final _formKey = GlobalKey<FormState>();
   final DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
@@ -26,7 +26,7 @@ class _TableReservationPageState extends State<TableReservationPage> {
   // Add a list to store the selected tables
   final List<String> _selectedTables = [];
 
-  List<String> _userReservations = [];
+  final List<String> _userReservations = [];
 
   @override
   void initState() {

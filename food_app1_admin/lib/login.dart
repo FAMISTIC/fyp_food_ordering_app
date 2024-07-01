@@ -131,7 +131,24 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 } else {
                   // Disallow login for other users
-                  print("Only 'superadmin@gmail.com' is allowed to log in.");
+                  print("Login failed.");
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Error'),
+                          content: const Text('Invalid email or password'),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('Close'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
                 }
               },
               child: Container(
