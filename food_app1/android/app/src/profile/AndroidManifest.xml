@@ -10,6 +10,7 @@ package="com.example.food_app1">
     android:enableOnBackInvokedCallback="true"
     android:icon="@mipmap/ic_launcher">
     </application>
+    <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 

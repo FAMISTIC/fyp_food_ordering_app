@@ -91,7 +91,7 @@ class _UserPageState extends State<UserPage> {
             appBar: AppBar(
               title: Center(child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('User Account Details'.toUpperCase()),
+                child: Text('Customer Account Details'.toUpperCase()),
               )),
               titleSpacing: 0.0,
               elevation: 0.0,

@@ -9,7 +9,9 @@ import 'package:food_app1/pages/push_notification_page.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+// ... (existing imports)
 // ... (existing imports)
 
 class ReceiptPage extends StatefulWidget {
@@ -32,7 +34,8 @@ class _ReceiptPageState extends State<ReceiptPage> {
   final NotificationManager _notificationManager = NotificationManager();
 
   @override
-  void initState(){
+  void initState() {
+    super.initState();
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
       if (!isAllowed) {
         AwesomeNotifications().requestPermissionToSendNotifications();
@@ -41,7 +44,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
   }
 
   Future<void> sendPushMessage() async {
-    try{
+    try {
       await http.post(
         Uri.parse('https://fcm.googleapis.com/fcm/send'),
         headers: <String, String>{
@@ -53,22 +56,108 @@ class _ReceiptPageState extends State<ReceiptPage> {
             'priority': 'high',
             'data': <String, dynamic>{
               'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-              'status' : 'done',
-              'body' : 'DJU CAFE',
-              'title' : 'Order Received',
+              'status': 'done',
+              'body': 'DJU CAFE',
+              'title': 'Order Received',
             },
-            "notification" : <String, dynamic>{
-              'title' : 'DJU CAFE',
-              'body' : 'Order Received',
+            "notification": <String, dynamic>{
+              'title': 'DJU CAFE',
+              'body': 'Order Received',
             },
             'to': "fm-HnU4qS5C6a-p7Aqo6zG:APA91bHxtIML_5T6D9Nthps9oIp1fJpXjXyE6ohrg0sd8fBre4_T3oXhlFnWJpzzCAZloJCqgkKND5PWjx9i9P4YIB9BMfo1DIQhwEkXUT9gzjQ_fG-XEQyNUr5O8Y-FzCsIA53kXwnR"
-          }
-        )
+          },
+        ),
       );
-    } catch (e){
-        if  (kDebugMode){
-            print("error push notification");
-        }
+    } catch (e) {
+      if (kDebugMode) {
+        print("error push notification");
+      }
+    }
+  }
+
+  Map<String, dynamic>? paymentIntent;
+
+  Future<void> makePayment() async {
+    try {
+      paymentIntent = await createPaymentIntent();
+
+      var gpay = const PaymentSheetGooglePay(
+        merchantCountryCode: "MY",
+        currencyCode: "MYR",
+        testEnv: true,
+      );
+
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          paymentIntentClientSecret: paymentIntent!["client_secret"],
+          style: ThemeMode.dark,
+          merchantDisplayName: "DJU CAFE",
+          googlePay: gpay,
+        ),
+      );
+
+      await displayPaymentSheet();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> displayPaymentSheet() async {
+    try {
+      await Stripe.instance.presentPaymentSheet();
+      print("Payment completed successfully");
+      Navigator.of(context).pop();
+      
+    String newOrderId = await _createNewOrder(widget.userId);
+    // Create a temporary AppUser instance with only userId
+    AppUser temporaryUser = AppUser(
+      uid: widget.userId,
+      email: "",
+      name: "",
+      phone: "",
+      imageLink: ""
+    );
+
+    // Navigate to the HomePage with the temporary AppUser instance
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomePage(
+          user: temporaryUser
+        ),
+      ),
+    );
+
+    } catch (e) {
+      if (e is StripeException) {
+        print("StripeException: ${e.error.localizedMessage}");
+      } else {
+        print("Exception: $e");
+      }
+    }
+  }
+
+  Future<Map<String, dynamic>> createPaymentIntent() async {
+    try {
+      final String? stripeSecretKey = dotenv.env['STRIPE_SECRET_KEY'];
+      if (stripeSecretKey == null) {
+        throw Exception("Stripe secret key is not defined in the .env file");
+      }
+      http.Response response = await http.post(
+        Uri.parse("https://api.stripe.com/v1/payment_intents"),
+        headers: {
+          "Authorization": "Bearer $stripeSecretKey",
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: {
+          'amount': (widget.totalAmount * 100).toInt().toString(), // Convert to cents
+          'currency': 'MYR',
+          'payment_method_types[]': 'card',
+        },
+      );
+      return json.decode(response.body);
+    } catch (e) {
+      throw Exception(e.toString());
     }
   }
 
@@ -80,19 +169,21 @@ class _ReceiptPageState extends State<ReceiptPage> {
       appBar: AppBar(
         titleSpacing: 0.0,
         elevation: 0.0,
-        backgroundColor: const Color.fromARGB(225,245, 93, 66),
+        backgroundColor: const Color.fromARGB(225, 245, 93, 66),
         shadowColor: Colors.grey,
         foregroundColor: Colors.white,
         shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    bottomRight: Radius.circular(25),
-                    bottomLeft: Radius.circular(25),
-                  ),
-                ),
-        title: const Center(child: Padding(
-          padding: EdgeInsets.only(right: 55),
-          child: Text('Receipt'),
-        )),
+          borderRadius: BorderRadius.only(
+            bottomRight: Radius.circular(25),
+            bottomLeft: Radius.circular(25),
+          ),
+        ),
+        title: const Center(
+          child: Padding(
+            padding: EdgeInsets.only(right: 55),
+            child: Text('Receipt'),
+          ),
+        ),
       ),
       body: FutureBuilder<String?>(
         future: widget.orderIdFuture,
@@ -196,7 +287,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                             ),
                             const SizedBox(height: 16),
                             Text(
-                              'Order ID: ${orderId}',
+                              'Order ID: $orderId',
                               style: const TextStyle(fontSize: 16),
                             ),
                             // Display other details...
@@ -242,92 +333,116 @@ class _ReceiptPageState extends State<ReceiptPage> {
                               'Total Amount: RM${widget.totalAmount.toStringAsFixed(2)}',
                               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                             ),
-                        const SizedBox(height: 16),
-                        Container(
-                          padding: const EdgeInsets.all(16.0),
-                          decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: Text(
-                            'Your order will be sent to the kitchen. Kindly pay ' +
-                                'RM${widget.totalAmount.toStringAsFixed(2)} ' +
-                                'at the counter to proceed with your order.',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        const SizedBox(height: 16),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: const Color.fromARGB(225, 245, 93, 66),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50.0),
-                            ),
-                          ),
-                          onPressed: () async {
-                            sendPushMessage();
-                            if (pushNotificationState.pushNotificationEnabled) {
-                              _notificationManager.triggerNotification();
-                            }
-
-                            String newOrderId = await _createNewOrder(widget.userId);
-
-                            // Show confirmation dialog
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text('Order Confirmed'),
-                                  content: const Text('Your order has been successfully created.'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: const Text('OK'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-
-                                        // Create a temporary AppUser instance with only userId
-                                        AppUser temporaryUser = AppUser(
-                                          uid: widget.userId, 
-                                          email: "", 
-                                          name: "", 
-                                          phone: "", 
-                                          imageLink: ""
-                                        );
-
-                                        // Navigate to the HomePage with the temporary AppUser instance
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => HomePage(
-                                              user: temporaryUser
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(vertical: 15.0),
-                            child: const Center(
+                            const SizedBox(height: 8),
+                            Container(
+                              padding: const EdgeInsets.all(16.0),
+                              decoration: BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
                               child: Text(
-                                'Confirm Order',
-                                style: TextStyle(fontSize: 18.0, color: Colors.white),
+                                'Your order will be sent to the kitchen. Kindly pay ' +
+                                    'RM${widget.totalAmount.toStringAsFixed(2)} ' +
+                                    'at the counter to proceed with your order.',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ),
-                        )
+                            const SizedBox(height: 8),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: const Color.fromARGB(225, 245, 93, 66),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50.0),
+                                ),
+                              ),
+                              onPressed: () async {
+                                sendPushMessage();
+                                if (pushNotificationState.pushNotificationEnabled) {
+                                  _notificationManager.triggerNotification();
+                                }
 
+                                String newOrderId = await _createNewOrder(widget.userId);
 
+                                // Show confirmation dialog
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Order Confirmed'),
+                                      content: const Text('Your order has been successfully created.'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: const Text('OK'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+
+                                            // Create a temporary AppUser instance with only userId
+                                            AppUser temporaryUser = AppUser(
+                                              uid: widget.userId,
+                                              email: "",
+                                              name: "",
+                                              phone: "",
+                                              imageLink: ""
+                                            );
+
+                                            // Navigate to the HomePage with the temporary AppUser instance
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => HomePage(
+                                                  user: temporaryUser
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(vertical: 15.0),
+                                child: const Center(
+                                  child: Text(
+                                    'Confirm Order',
+                                    style: TextStyle(fontSize: 18.0, color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: const Color.fromARGB(225, 66, 134, 245),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50.0),
+                                ),
+                              ),
+                              onPressed: () async {
+                                await makePayment();
+                                sendPushMessage();
+                                if (pushNotificationState.pushNotificationEnabled) {
+                                  _notificationManager.triggerNotification();
+                                }
+
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(vertical: 15.0),
+                                child: const Center(
+                                  child: Text(
+                                    'Pay with Stripe',
+                                    style: TextStyle(fontSize: 18.0, color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       );
@@ -344,8 +459,11 @@ class _ReceiptPageState extends State<ReceiptPage> {
 
   Future<String> _createNewOrder(String userId) async {
     // Create a new order document under the 'order' collection
-    DocumentReference newOrderRef =
-        await FirebaseFirestore.instance.collection('users').doc(userId).collection('order').add({
+    DocumentReference newOrderRef = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('order')
+        .add({
       'orderDate': DateTime.now(),
       'checkOutDate': null,
       'totalAmount': 0,
