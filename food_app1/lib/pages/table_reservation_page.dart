@@ -133,6 +133,27 @@ class _TableReservationPageState extends State<TableReservationPage> {
                 ),
                 controller: TextEditingController(text: _selectedTime.format(context)),
               ),
+              const SizedBox(height: 10),
+              Container(
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 243, 123, 25),
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child:  const Row(
+                  children: [
+                    Text(
+                      'Table [1-5] : 4 pax per table' +
+                      '\nTable [6-10] : 6 pax per table',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(height: 20),
               Expanded(
                 child: ListView.builder(

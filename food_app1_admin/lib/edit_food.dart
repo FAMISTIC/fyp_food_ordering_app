@@ -48,7 +48,7 @@ class _EditFoodState extends State<EditFood> {
   CollectionReference updateFood =
       FirebaseFirestore.instance.collection('foods');
 
-  Future<void> _updateUser(id, name, description, price, type) {
+  Future<void> _updateUser(id, name, description, double price, type) {
     return updateFood
         .doc(id)
         .update({
@@ -78,7 +78,8 @@ class _EditFoodState extends State<EditFood> {
             TextButton(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  _updateUser(id, name, description, price, type);
+                  double parsedPrice = double.tryParse(price) ?? 0.0; // Parsing the price
+                  _updateUser(id, name, description, parsedPrice, type);
                   saveFoodImage();
                   Navigator.of(context).pop(); // Close the dialog
                   Navigator.pop(context); // Close the form
@@ -110,7 +111,7 @@ class _EditFoodState extends State<EditFood> {
         var data = snapshot.data?.data();
         var name = data!['name'];
         var description = data['description'];
-        var price = data['price'];
+        var price = data['price'].toString(); // Convert double to string
         var type = data['type'];
 
         return Scaffold(
@@ -229,7 +230,7 @@ class _EditFoodState extends State<EditFood> {
                     horizontal: 15,
                   ),
                   child: TextFormField(
-                    initialValue: price?.toString(),
+                    initialValue: price,
                     onChanged: (value) {
                       price = value;
                     },
@@ -244,6 +245,9 @@ class _EditFoodState extends State<EditFood> {
                     validator: (val) {
                       if (val == null || val.isEmpty) {
                         return 'Please Fill The Price';
+                      }
+                      if (double.tryParse(val) == null) {
+                        return 'Please enter a valid number';
                       }
                       return null;
                     },
