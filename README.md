@@ -32,3 +32,10 @@ A modern food ordering mobile application built using **Flutter** and **Firebase
    ```bash
    git clone https://github.com/your-username/food-ordering-app.git
    cd food-ordering-app
+
+## 📷 Screenshots
+
+![photo_2025-05-24_21-35-37](https://github.com/user-attachments/assets/9e75eca7-002d-4950-81b4-25749cd3af7a)
+![photo_2025-05-24_21-35-56](https://github.com/user-attachments/assets/cdbb7d3b-fade-4e31-8a3f-4406dbd7d8a9)
+![photo_2025-05-24_21-36-00](https://github.com/user-attachments/assets/119612bb-872d-4b46-a106-c9f8169925a5)
+![photo_2025-05-24_21-36-03](https://github.com/user-attachments/assets/1d84a999-eca4-4b7a-870f-9c4bd0bc5e5d)
