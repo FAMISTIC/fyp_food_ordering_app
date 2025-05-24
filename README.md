@@ -59,5 +59,12 @@ Pull requests are welcome! For major changes, please open an issue first to disc
 <img src="https://github.com/user-attachments/assets/fa1008d8-c480-4714-ba07-9e7d1a2a9a1e" alt="Food Ordering App Screenshot" width="300"/>
 <img src="https://github.com/user-attachments/assets/289dff77-115c-4054-929c-ec8f999aed34" alt="Food Ordering App Screenshot" width="300"/>
 <img src="https://github.com/user-attachments/assets/e42f118f-aa1a-49c3-abb8-d8294f1c252f" alt="Food Ordering App Screenshot" width="300"/>
+<img src="https://github.com/user-attachments/assets/dbbbca9b-9b8b-4a6b-ae67-510cafb1997e" alt="Food Ordering App Screenshot" width="300"/>
+<img src="https://github.com/user-attachments/assets/b9145529-473d-4f64-ae76-03c0957a49b9" alt="Food Ordering App Screenshot" width="300"/>
+<img src="https://github.com/user-attachments/assets/956780a9-37d3-4fa4-84b4-2b5c064a62fb" alt="Food Ordering App Screenshot" width="300"/>
+<img src="https://github.com/user-attachments/assets/92e40261-12f6-4c0a-967d-80c3cf0908cf" alt="Food Ordering App Screenshot" width="300"/>
+<img src="https://github.com/user-attachments/assets/84610281-8442-4c93-82b9-6cf49d9cb03e" alt="Food Ordering App Screenshot" width="300"/>
+<img src="https://github.com/user-attachments/assets/5ead9e6d-bebe-413d-aad6-cb07b84c0377" alt="Food Ordering App Screenshot" width="300"/>
+
 
 
