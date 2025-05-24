@@ -1,4 +1,4 @@
-![photo_2025-05-24_21-37-07](https://github.com/user-attachments/assets/4418c4ff-3ab3-470d-bc07-9b994ada24ca)![photo_2025-05-24_21-36-48](https://github.com/user-attachments/assets/8ec7cd17-7f65-459e-9505-465767eefae8)# 🍔 Food Ordering App
+# 🍔 Food Ordering App
 
 A modern food ordering mobile application built using **Flutter** and **Firebase**, featuring secure authentication, real-time database updates, push notifications, and Stripe-powered payments.
 
