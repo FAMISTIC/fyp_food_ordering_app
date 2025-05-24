@@ -26,13 +26,6 @@ A modern food ordering mobile application built using **Flutter** and **Firebase
 
 ---
 
-## 📦 Installation
-
-1. **Clone the repository
-   ```bash
-   git clone https://github.com/your-username/food-ordering-app.git
-   cd food-ordering-app
-
 ## 📄 License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
